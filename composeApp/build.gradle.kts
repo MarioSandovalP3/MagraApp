@@ -14,7 +14,7 @@ plugins {
 kotlin {
     // Android target configured via androidLibrary block (replaces androidTarget + android{})
     androidLibrary {
-        namespace = "com.example.cmp.composeapp"
+        namespace = "com.magraapp.composeapp"
         compileSdk = libs.versions.android.compileSdk.get().toInt()
         minSdk = libs.versions.android.minSdk.get().toInt()
 
