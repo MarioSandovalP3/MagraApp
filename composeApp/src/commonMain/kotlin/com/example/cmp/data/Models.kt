@@ -1,8 +1,11 @@
 package com.example.cmp.data
 
+import kotlinx.serialization.Serializable
+
 /**
  * Género del usuario para los cálculos de composición corporal.
  */
+@Serializable
 enum class Gender(val displayName: String) {
     MALE("Hombre"),
     FEMALE("Mujer")
@@ -11,6 +14,7 @@ enum class Gender(val displayName: String) {
 /**
  * Objetivo del usuario.
  */
+@Serializable
 enum class UserGoal(val displayName: String, val emoji: String, val description: String) {
     LOSE_FAT("Perder Grasa", "🔥", "Reduce tu porcentaje de grasa corporal"),
     GAIN_MUSCLE("Ganar Músculo", "💪", "Aumenta tu masa muscular magra"),
@@ -20,6 +24,7 @@ enum class UserGoal(val displayName: String, val emoji: String, val description:
 /**
  * Modo de cálculo.
  */
+@Serializable
 enum class CalculationMode(val displayName: String, val description: String) {
     QUICK("Modo Rápido", "Solo IMC — menos preciso"),
     ADVANCED("Modo Avanzado", "Método de la Marina — recomendado")
@@ -28,6 +33,7 @@ enum class CalculationMode(val displayName: String, val description: String) {
 /**
  * Mediciones ingresadas por el usuario.
  */
+@Serializable
 data class UserMeasurements(
     val gender: Gender,
     val age: Int,
@@ -42,6 +48,7 @@ data class UserMeasurements(
 /**
  * Categoría de composición corporal según ACSM.
  */
+@Serializable
 enum class BodyCategory(
     val displayName: String,
     val emoji: String,
@@ -76,6 +83,7 @@ enum class BodyCategory(
 /**
  * Nivel de riesgo cardiovascular según ICA (Relación Cintura-Altura).
  */
+@Serializable
 enum class CardiovascularRisk(val displayName: String, val emoji: String) {
     LOW("Bajo", "💚"),
     MODERATE("Moderado", "💛"),
@@ -86,6 +94,7 @@ enum class CardiovascularRisk(val displayName: String, val emoji: String) {
 /**
  * Resultado completo de la evaluación de composición corporal.
  */
+@Serializable
 data class BodyCompositionResult(
     val bodyFatPercentage: Double,
     val fatMassKg: Double,
@@ -102,6 +111,7 @@ data class BodyCompositionResult(
 /**
  * Entrada del historial.
  */
+@Serializable
 data class HistoryEntry(
     val id: Long,
     val timestamp: Long, // epoch millis

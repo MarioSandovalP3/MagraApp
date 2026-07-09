@@ -141,6 +141,25 @@ composeApp/src/commonMain/kotlin/com/example/cmp/
 
 ---
 
+## 🛠️ Configuración del Entorno Local
+
+Este proyecto está optimizado para entornos de desarrollo modernos. Al clonar el repositorio, asegúrate de cumplir con los siguientes requisitos en tu entorno local:
+
+### Requisitos Previos
+* **Java JDK:** Se recomienda utilizar **Zulu JDK 21** (o superior).
+* **Android SDK:** Asegúrate de tener instalado el SDK de Android en tu sistema.
+
+### Pasos para el Primer Inicio (Clonación)
+El archivo `local.properties` está excluido del repositorio por seguridad y portabilidad. Para configurar el proyecto en una nueva máquina:
+
+1. **Abrir en Android Studio:** Abre la carpeta raíz del proyecto. Android Studio detectará la falta del archivo `local.properties` y lo generará automáticamente con las rutas de tu sistema.
+2. **Configurar el SDK (Si es necesario):** Si el IDE no detecta tu SDK, ve a `File > Project Structure > SDK Location` y apunta a la ruta de tu SDK local.
+   > 💡 *Tip de rendimiento en Windows:* Se recomienda mover el SDK a una ruta corta en la raíz (ej. `C:\Android`) para evitar errores de longitud de caracteres de Windows y mejorar la velocidad de compilación.
+3. **Configurar el JDK de Gradle:** 
+   * Ve a `File > Settings > Build, Execution, Deployment > Build Tools > Gradle`.
+   * En **Gradle JDK**, selecciona tu instalación local de **Zulu** correspondiente a la versión del proyecto.
+4. **Sincronizar:** Haz clic en **Sync Project with Gradle Files** (el icono del elefante) para descargar las dependencias.
+
 ## 📄 Licencia
 
 Este proyecto está licenciado bajo la Licencia Apache 2.0 — consulta el archivo [LICENSE](LICENSE) para más detalles.

@@ -29,6 +29,11 @@ enum class Screen {
 @Preview
 fun App() {
     MagraTheme {
+        // Inicializar repositorio con persistencia
+        LaunchedEffect(Unit) {
+            HistoryRepository.initialize()
+        }
+
         // Estado de navegación
         var currentScreen by remember { mutableStateOf(Screen.WELCOME) }
 
