@@ -8,6 +8,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
@@ -57,6 +61,7 @@ fun InputScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(MagraGradients.Background)
+            .imePadding()
     ) {
         Column(
             modifier = Modifier
@@ -64,6 +69,7 @@ fun InputScreen(
                 .verticalScroll(scrollState)
                 .padding(horizontal = 24.dp)
                 .padding(top = 48.dp, bottom = 24.dp)
+                .navigationBarsPadding()
         ) {
             // Header con botón atrás
             Row(
