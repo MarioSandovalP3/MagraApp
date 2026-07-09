@@ -30,7 +30,8 @@ import com.example.cmp.ui.theme.MagraGradients
  */
 @Composable
 fun WelcomeScreen(
-    onGoalSelected: (UserGoal) -> Unit
+    onGoalSelected: (UserGoal) -> Unit,
+    onOpenSettings: () -> Unit = {}
 ) {
     var selectedGoal by remember { mutableStateOf<UserGoal?>(null) }
 
@@ -58,10 +59,19 @@ fun WelcomeScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(horizontal = 28.dp)
-                .padding(top = 60.dp, bottom = 32.dp),
+                .padding(top = 16.dp, bottom = 32.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween
         ) {
+            // Header con botón de ajustes
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End
+            ) {
+                IconButton(onClick = onOpenSettings) {
+                    Text(text = "⚙️", fontSize = 24.sp)
+                }
+            }
             // Header
             AnimatedVisibility(
                 visible = visible,

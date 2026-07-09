@@ -120,3 +120,13 @@ data class HistoryEntry(
     val result: BodyCompositionResult,
     val goal: UserGoal
 )
+
+/**
+ * Ajustes de IA.
+ */
+@Serializable
+data class AiSettings(
+    val apiKey: String = "",
+    val baseUrl: String = "https://api.openai.com/v1/",
+    val model: String = "gpt-3.5-turbo"
+)

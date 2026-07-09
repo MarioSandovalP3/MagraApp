@@ -20,6 +20,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.cmp.data.*
+import com.example.cmp.domain.AiRecommendationService
 import com.example.cmp.domain.GoalRecommendations
 import com.example.cmp.domain.Recommendation
 import com.example.cmp.domain.RecommendationType
@@ -52,6 +53,19 @@ fun ResultsScreen(
     // Animación de entrada
     var visible by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) { visible = true }
+
+    // IA
+    var aiRecommendation by remember { mutableStateOf<String?>(null) }
+    var isAiLoading by remember { mutableStateOf(false) }
+
+    LaunchedEffect(result, goal) {
+        val settings = StorageManager.loadAiSettings()
+        if (settings.apiKey.isNotBlank()) {
+            isAiLoading = true
+            aiRecommendation = AiRecommendationService.getRecommendations(result, goal)
+            isAiLoading = false
+        }
+    }
 
     // Color según categoría
     val categoryColor = when (result.category) {
@@ -285,6 +299,45 @@ fun ResultsScreen(
                     }
                 }
                 Spacer(modifier = Modifier.height(16.dp))
+            }
+
+            // Recomendaciones de IA
+            if (isAiLoading || aiRecommendation != null) {
+                AnimatedVisibility(
+                    visible = visible,
+                    enter = fadeIn(tween(600, delayMillis = 720))
+                ) {
+                    Column {
+                        SectionHeader("✨ RECOMENDACIONES DE IA")
+                        
+                        if (isAiLoading) {
+                            GlassCard(modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)) {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    CircularProgressIndicator(
+                                        color = MagraColors.Primary,
+                                        modifier = Modifier.size(20.dp),
+                                        strokeWidth = 2.dp
+                                    )
+                                    Spacer(modifier = Modifier.width(12.dp))
+                                    Text(
+                                        text = "Analizando tu composición y generando plan...",
+                                        color = MagraColors.TextSecondary,
+                                        fontSize = 13.sp
+                                    )
+                                }
+                            }
+                        } else if (aiRecommendation != null) {
+                            GlassCard(modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)) {
+                                Text(
+                                    text = aiRecommendation!!,
+                                    color = MagraColors.TextPrimary,
+                                    fontSize = 14.sp,
+                                    lineHeight = 20.sp
+                                )
+                            }
+                        }
+                    }
+                }
             }
 
             // Recomendaciones personalizadas

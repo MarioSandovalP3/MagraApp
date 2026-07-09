@@ -8,6 +8,15 @@ import com.example.cmp.data.*
 import com.example.cmp.domain.BodyCompositionCalculator
 import com.example.cmp.ui.screens.*
 import com.example.cmp.ui.theme.MagraTheme
+import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.ModalDrawerSheet
+import androidx.compose.material3.ModalNavigationDrawer
+import androidx.compose.material3.rememberDrawerState
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.ui.unit.dp
+import com.example.cmp.ui.components.SettingsPanel
+import kotlinx.coroutines.launch
 
 /**
  * Pantallas de la aplicación para la navegación manual.
@@ -46,8 +55,27 @@ fun App() {
         // Contador para generar fechas simples
         var measurementCount by remember { mutableIntStateOf(0) }
 
-        AnimatedContent(
-            targetState = currentScreen,
+        val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+        val coroutineScope = rememberCoroutineScope()
+
+        ModalNavigationDrawer(
+            drawerState = drawerState,
+            drawerContent = {
+                ModalDrawerSheet(
+                    modifier = androidx.compose.ui.Modifier
+                        .widthIn(max = 340.dp)
+                        .fillMaxHeight()
+                ) {
+                    SettingsPanel(
+                        onClose = {
+                            coroutineScope.launch { drawerState.close() }
+                        }
+                    )
+                }
+            }
+        ) {
+            AnimatedContent(
+                targetState = currentScreen,
             transitionSpec = {
                 when {
                     // Ir hacia adelante
@@ -69,6 +97,9 @@ fun App() {
                         onGoalSelected = { goal ->
                             selectedGoal = goal
                             currentScreen = Screen.INPUT
+                        },
+                        onOpenSettings = {
+                            coroutineScope.launch { drawerState.open() }
                         }
                     )
                 }
@@ -140,6 +171,7 @@ fun App() {
                         }
                     )
                 }
+            }
             }
         }
     }

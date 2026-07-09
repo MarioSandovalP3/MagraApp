@@ -52,6 +52,37 @@ object StorageManager {
     fun clearStorage() {
         PlatformStorage.write(STORAGE_KEY, "[]")
     }
+
+    private const val AI_SETTINGS_KEY = "magra_ai_settings"
+
+    /**
+     * Guarda la configuración de IA.
+     */
+    fun saveAiSettings(settings: AiSettings) {
+        try {
+            val data = json.encodeToString(settings)
+            PlatformStorage.write(AI_SETTINGS_KEY, data)
+        } catch (e: Exception) {
+            println("StorageManager: Error saving AI settings: ${e.message}")
+        }
+    }
+
+    /**
+     * Carga la configuración de IA.
+     */
+    fun loadAiSettings(): AiSettings {
+        return try {
+            val data = PlatformStorage.read(AI_SETTINGS_KEY)
+            if (data.isNullOrBlank()) {
+                AiSettings()
+            } else {
+                json.decodeFromString<AiSettings>(data)
+            }
+        } catch (e: Exception) {
+            println("StorageManager: Error loading AI settings: ${e.message}")
+            AiSettings()
+        }
+    }
 }
 
 /**
