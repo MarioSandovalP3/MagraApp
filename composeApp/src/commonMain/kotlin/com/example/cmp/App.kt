@@ -1,47 +1,139 @@
-﻿package com.example.cmp
+package com.example.cmp
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.safeContentPadding
-import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.animation.*
+import androidx.compose.animation.core.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import org.jetbrains.compose.resources.painterResource
+import com.example.cmp.data.*
+import com.example.cmp.domain.BodyCompositionCalculator
+import com.example.cmp.ui.screens.*
+import com.example.cmp.ui.theme.MagraTheme
 
-import cmp.composeapp.generated.resources.Res
-import cmp.composeapp.generated.resources.compose_multiplatform
+/**
+ * Pantallas de la aplicación para la navegación manual.
+ */
+enum class Screen {
+    WELCOME,
+    INPUT,
+    RESULTS,
+    HISTORY
+}
 
+/**
+ * Punto de entrada principal de la aplicación MagraApp.
+ *
+ * Gestiona la navegación entre pantallas usando estado Compose,
+ * sin dependencias externas de navegación.
+ */
 @Composable
 @Preview
 fun App() {
-    MaterialTheme {
-        var showContent by remember { mutableStateOf(false) }
-        Column(
-            modifier = Modifier
-                .background(MaterialTheme.colorScheme.primaryContainer)
-                .safeContentPadding()
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Button(onClick = { showContent = !showContent }) {
-                Text("Click me!")
+    MagraTheme {
+        // Estado de navegación
+        var currentScreen by remember { mutableStateOf(Screen.WELCOME) }
+
+        // Estado compartido entre pantallas
+        var selectedGoal by remember { mutableStateOf(UserGoal.MAINTAIN) }
+        var lastMeasurements by remember { mutableStateOf<UserMeasurements?>(null) }
+        var lastResult by remember { mutableStateOf<BodyCompositionResult?>(null) }
+        var historyEntries by remember { mutableStateOf(HistoryRepository.getHistory()) }
+
+        // Contador para generar fechas simples
+        var measurementCount by remember { mutableIntStateOf(0) }
+
+        AnimatedContent(
+            targetState = currentScreen,
+            transitionSpec = {
+                when {
+                    // Ir hacia adelante
+                    targetState.ordinal > initialState.ordinal -> {
+                        (slideInHorizontally { it } + fadeIn()) togetherWith
+                            (slideOutHorizontally { -it / 3 } + fadeOut())
+                    }
+                    // Ir hacia atrás
+                    else -> {
+                        (slideInHorizontally { -it } + fadeIn()) togetherWith
+                            (slideOutHorizontally { it / 3 } + fadeOut())
+                    }
+                }
             }
-            AnimatedVisibility(showContent) {
-                val greeting = remember { Greeting().greet() }
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    Image(painterResource(Res.drawable.compose_multiplatform), null)
-                    Text("Compose: $greeting")
+        ) { screen ->
+            when (screen) {
+                Screen.WELCOME -> {
+                    WelcomeScreen(
+                        onGoalSelected = { goal ->
+                            selectedGoal = goal
+                            currentScreen = Screen.INPUT
+                        }
+                    )
+                }
+
+                Screen.INPUT -> {
+                    InputScreen(
+                        goal = selectedGoal,
+                        onCalculate = { measurements ->
+                            lastMeasurements = measurements
+                            lastResult = BodyCompositionCalculator.calculate(measurements)
+                            currentScreen = Screen.RESULTS
+                        },
+                        onBack = {
+                            currentScreen = Screen.WELCOME
+                        }
+                    )
+                }
+
+                Screen.RESULTS -> {
+                    val result = lastResult
+                    val measurements = lastMeasurements
+
+                    if (result != null && measurements != null) {
+                        // Obtener la última entrada del historial para comparación
+                        val previousEntry = historyEntries.firstOrNull()
+
+                        ResultsScreen(
+                            result = result,
+                            measurements = measurements,
+                            goal = selectedGoal,
+                            previousEntry = previousEntry,
+                            onSaveToHistory = {
+                                measurementCount++
+                                val dateString = "Medición #$measurementCount"
+                                HistoryRepository.addEntry(
+                                    measurements = measurements,
+                                    result = result,
+                                    goal = selectedGoal,
+                                    dateString = dateString
+                                )
+                                historyEntries = HistoryRepository.getHistory()
+                            },
+                            onNewMeasurement = {
+                                currentScreen = Screen.INPUT
+                            },
+                            onViewHistory = {
+                                historyEntries = HistoryRepository.getHistory()
+                                currentScreen = Screen.HISTORY
+                            },
+                            onBack = {
+                                currentScreen = Screen.INPUT
+                            }
+                        )
+                    }
+                }
+
+                Screen.HISTORY -> {
+                    HistoryScreen(
+                        entries = historyEntries,
+                        onBack = {
+                            currentScreen = if (lastResult != null) Screen.RESULTS else Screen.INPUT
+                        },
+                        onClearHistory = {
+                            HistoryRepository.clearHistory()
+                            historyEntries = HistoryRepository.getHistory()
+                        },
+                        onNewMeasurement = {
+                            currentScreen = Screen.INPUT
+                        }
+                    )
                 }
             }
         }
