@@ -81,6 +81,26 @@ fun ResultsScreen(
         }
     }
 
+    // Estado para diálogo de información
+    var infoDialogType by remember { mutableStateOf<String?>(null) }
+
+    // Información de métricas para el diálogo
+    val metricInfo = mapOf(
+        "FFMI" to Pair("📊 FFMI - Índice de Masa Libre de Grasa",
+            "El FFMI (Fat-Free Mass Index) es como el IMC pero solo para masa muscular. " +
+            "Elimina la grasa corporal del cálculo, dando una medida real de tu desarrollo muscular. " +
+            "\n\n• < 18: Por debajo del promedio\n• 18-20: Promedio\n• 20-22: Sobre el promedio\n• 22-25: Nivel atlético\n• > 25: Nivel élite (posible uso de sustancias)"),
+        "ICA" to Pair("${result.cardiovascularRisk.emoji} ICA - Índice Cintura-Altura",
+            "El ICA (Waist-to-Height Ratio) mide la grasa abdominal dividiendo la cintura entre la estatura. " +
+            "Es uno de los mejores predictores de riesgo cardiovascular y metabólico. " +
+            "\n\n• < 0.50: Bajo riesgo 💚\n• 0.50-0.53: Moderado 💛\n• 0.54-0.59: Alto 🧡\n• ≥ 0.60: Muy alto ❤️"),
+        "IMC" to Pair("📏 IMC - Índice de Masa Corporal",
+            "El IMC (Body Mass Index) es una medida básica que relaciona peso y estatura. " +
+            "Su principal limitación es que NO distingue entre grasa y músculo. " +
+            "\n\n• < 18.5: Bajo peso\n• 18.5-24.9: Normal\n• 25-29.9: Sobrepeso\n• ≥ 30: Obesidad" +
+            "\n\n⚠️ MagraApp usa el Método de la Marina para superar esta limitación.")
+    )
+
     // Color según categoría
     val categoryColor = when (result.category) {
         BodyCategory.ATHLETE -> MagraColors.CategoryAthlete
@@ -257,7 +277,8 @@ fun ResultsScreen(
                                 result.ffmi < 25 -> "Excelente — nivel atlético"
                                 else -> "Excepcional — nivel élite"
                             },
-                            accentColor = MagraColors.Accent
+                            accentColor = MagraColors.Accent,
+                            onInfoClick = { infoDialogType = "FFMI" }
                         )
 
                         Spacer(modifier = Modifier.height(12.dp))
@@ -270,7 +291,8 @@ fun ResultsScreen(
                             title = "ICA (Cintura / Altura)",
                             value = "${result.waistToHeightRatio}",
                             subtitle = "Riesgo cardiovascular: ${result.cardiovascularRisk.displayName}",
-                            accentColor = riskColor
+                            accentColor = riskColor,
+                            onInfoClick = { infoDialogType = "ICA" }
                         )
 
                         Spacer(modifier = Modifier.height(12.dp))
@@ -286,7 +308,8 @@ fun ResultsScreen(
                             result.bmi < 30 -> "Sobrepeso"
                             else -> "Obesidad"
                         } + " · Solo usa peso y altura",
-                        accentColor = MagraColors.TextSecondary
+                        accentColor = MagraColors.TextSecondary,
+                        onInfoClick = { infoDialogType = "IMC" }
                     )
                 }
             }
@@ -493,6 +516,38 @@ fun ResultsScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
         }
+    }
+
+    // Diálogo de información de métricas
+    val currentInfo = infoDialogType?.let { metricInfo[it] }
+    if (currentInfo != null) {
+        AlertDialog(
+            onDismissRequest = { infoDialogType = null },
+            containerColor = MagraColors.SurfaceElevated,
+            titleContentColor = Color.White,
+            textContentColor = MagraColors.TextSecondary,
+            title = {
+                Text(
+                    text = currentInfo.first,
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold
+                )
+            },
+            text = {
+                Text(
+                    text = currentInfo.second,
+                    color = MagraColors.TextSecondary,
+                    fontSize = 14.sp,
+                    lineHeight = 20.sp
+                )
+            },
+            confirmButton = {
+                TextButton(onClick = { infoDialogType = null }) {
+                    Text("Entendido", color = MagraColors.Primary)
+                }
+            },
+            shape = RoundedCornerShape(20.dp)
+        )
     }
 }
 

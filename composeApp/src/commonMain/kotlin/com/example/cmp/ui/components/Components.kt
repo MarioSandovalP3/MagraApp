@@ -257,7 +257,8 @@ fun MetricCard(
     value: String,
     subtitle: String = "",
     accentColor: Color = MagraColors.Primary,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onInfoClick: (() -> Unit)? = null
 ) {
     GlassCard(modifier = modifier) {
         Column(
@@ -281,13 +282,37 @@ fun MetricCard(
             Spacer(modifier = Modifier.height(12.dp))
 
             // Título
-            Text(
-                text = title,
-                color = MagraColors.TextSecondary,
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Medium,
-                textAlign = TextAlign.Center
-            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = title,
+                    color = MagraColors.TextSecondary,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Medium,
+                    textAlign = TextAlign.Center
+                )
+                if (onInfoClick != null) {
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Box(
+                        modifier = Modifier
+                            .size(26.dp)
+                            .clip(CircleShape)
+                            .background(accentColor.copy(alpha = 0.2f))
+                            .clickable(onClick = onInfoClick),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "i",
+                            color = accentColor,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
+            }
 
             Spacer(modifier = Modifier.height(4.dp))
 
