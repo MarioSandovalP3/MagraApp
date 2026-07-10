@@ -134,15 +134,14 @@ fun ResultsScreen(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Box(
+                IconButton(
+                    onClick = onBack,
                     modifier = Modifier
                         .size(40.dp)
                         .clip(CircleShape)
                         .background(Color.White.copy(alpha = 0.08f))
-                        .clickable(onClick = onBack),
-                    contentAlignment = Alignment.Center
                 ) {
-                    Text("←", color = Color.White, fontSize = 20.sp)
+                    BackIcon(color = Color.White)
                 }
                 Spacer(modifier = Modifier.width(16.dp))
                 Column(modifier = Modifier.weight(1f)) {

@@ -23,6 +23,7 @@ import com.example.cmp.data.ActivityLevel
 import com.example.cmp.data.UserGoal
 import com.example.cmp.ui.components.ActivityLevelSelector
 import com.example.cmp.ui.components.GradientButton
+import com.example.cmp.ui.components.BackIcon
 import com.example.cmp.ui.theme.MagraColors
 import com.example.cmp.ui.theme.MagraGradients
 
@@ -50,10 +51,12 @@ fun ActivityScreen(
             ) {
                 Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                        Box(
-                            modifier = Modifier.size(40.dp).clip(CircleShape).background(Color.White.copy(alpha = 0.08f)).clickable(onClick = onBack),
-                            contentAlignment = Alignment.Center
-                        ) { Text("←", color = Color.White, fontSize = 20.sp) }
+                        IconButton(
+                            onClick = onBack,
+                            modifier = Modifier.size(40.dp).clip(CircleShape).background(Color.White.copy(alpha = 0.08f))
+                        ) {
+                            BackIcon(color = Color.White)
+                        }
                         IconButton(onClick = onOpenSettings) {
                             Text("☰", fontSize = 24.sp, color = Color.White)
                         }

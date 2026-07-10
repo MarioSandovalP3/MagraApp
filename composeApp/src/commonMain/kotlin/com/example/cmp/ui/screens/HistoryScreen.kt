@@ -55,15 +55,14 @@ fun HistoryScreen(
                     .padding(horizontal = 24.dp)
                     .padding(top = 48.dp, bottom = 16.dp)
             ) {
-                Box(
+                IconButton(
+                    onClick = onBack,
                     modifier = Modifier
                         .size(40.dp)
                         .clip(CircleShape)
                         .background(Color.White.copy(alpha = 0.08f))
-                        .clickable(onClick = onBack),
-                    contentAlignment = Alignment.Center
                 ) {
-                    Text("←", color = Color.White, fontSize = 20.sp)
+                    BackIcon(color = Color.White)
                 }
                 Spacer(modifier = Modifier.width(16.dp))
                 Column(modifier = Modifier.weight(1f)) {
