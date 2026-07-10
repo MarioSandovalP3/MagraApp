@@ -36,7 +36,7 @@ fun InputScreen(
 ) {
     var isAdvancedMode by remember { mutableStateOf(true) }
     var selectedGender by remember { mutableStateOf(Gender.MALE) }
-    var selectedActivity by remember { mutableStateOf(ActivityLevel.GENERAL_ACTIVE) }
+    var selectedActivity by remember { mutableStateOf(ActivityLevel.SEDENTARY) }
 
     // Campos de texto
     var age by remember { mutableStateOf("") }

@@ -58,7 +58,7 @@ data class UserMeasurements(
     val waistCm: Double = 0.0,    // Solo modo avanzado
     val hipCm: Double = 0.0,      // Solo modo avanzado + mujeres
     val mode: CalculationMode = CalculationMode.ADVANCED,
-    val activityLevel: ActivityLevel = ActivityLevel.GENERAL_ACTIVE
+    val activityLevel: ActivityLevel = ActivityLevel.SEDENTARY
 )
 
 /**
