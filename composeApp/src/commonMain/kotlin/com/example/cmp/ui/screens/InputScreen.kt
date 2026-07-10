@@ -21,6 +21,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.cmp.data.*
+import com.example.cmp.domain.BodyValidation
 import com.example.cmp.ui.components.*
 import com.example.cmp.ui.theme.MagraColors
 import com.example.cmp.ui.theme.MagraGradients
@@ -51,6 +52,9 @@ fun InputScreen(
     val isAdvancedValid = isBasicValid && neck.isNotEmpty() && waist.isNotEmpty() &&
         (selectedGender == Gender.MALE || hip.isNotEmpty())
     val isFormValid = if (isAdvancedMode) isAdvancedValid else isBasicValid
+
+    var validationErrors by remember { mutableStateOf<List<String>>(emptyList()) }
+    var showValidation by remember { mutableStateOf(false) }
 
     val scrollState = rememberScrollState()
 
@@ -276,22 +280,77 @@ fun InputScreen(
 
             Spacer(modifier = Modifier.height(28.dp))
 
+            // Mensajes de error de validación
+            AnimatedVisibility(visible = showValidation && validationErrors.isNotEmpty()) {
+                GlassCard(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 12.dp)
+                ) {
+                    Text(
+                        text = "⚠️ Verifica los datos:",
+                        color = Color(0xFFFF5252),
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    validationErrors.forEach { error ->
+                        Row(
+                            modifier = Modifier.padding(vertical = 2.dp),
+                            verticalAlignment = Alignment.Top
+                        ) {
+                            Text("• ", color = Color(0xFFFF5252), fontSize = 13.sp)
+                            Text(
+                                text = error,
+                                color = MagraColors.TextSecondary,
+                                fontSize = 13.sp,
+                                lineHeight = 18.sp
+                            )
+                        }
+                    }
+                }
+            }
+
             // Calculate Button
             GradientButton(
                 text = "CALCULAR",
                 onClick = {
-                    val measurements = UserMeasurements(
+                    showValidation = true
+                    val ageVal = age.toIntOrNull() ?: 0
+                    val weightVal = weight.toDoubleOrNull() ?: 0.0
+                    val heightVal = height.toDoubleOrNull() ?: 0.0
+                    val neckVal = neck.toDoubleOrNull() ?: 0.0
+                    val waistVal = waist.toDoubleOrNull() ?: 0.0
+                    val hipVal = hip.toDoubleOrNull() ?: 0.0
+
+                    val result = BodyValidation.validate(
+                        age = ageVal,
+                        weightKg = weightVal,
+                        heightCm = heightVal,
+                        neckCm = neckVal,
+                        waistCm = waistVal,
+                        hipCm = hipVal,
                         gender = selectedGender,
-                        age = age.toIntOrNull() ?: 25,
-                        weightKg = weight.toDoubleOrNull() ?: 70.0,
-                        heightCm = height.toDoubleOrNull() ?: 170.0,
-                        neckCm = neck.toDoubleOrNull() ?: 0.0,
-                        waistCm = waist.toDoubleOrNull() ?: 0.0,
-                        hipCm = hip.toDoubleOrNull() ?: 0.0,
-                        mode = if (isAdvancedMode) CalculationMode.ADVANCED else CalculationMode.QUICK,
-                        activityLevel = selectedActivity
+                        isAdvanced = isAdvancedMode
                     )
-                    onCalculate(measurements)
+
+                    if (result.isValid) {
+                        validationErrors = emptyList()
+                        val measurements = UserMeasurements(
+                            gender = selectedGender,
+                            age = ageVal,
+                            weightKg = weightVal,
+                            heightCm = heightVal,
+                            neckCm = neckVal,
+                            waistCm = waistVal,
+                            hipCm = hipVal,
+                            mode = if (isAdvancedMode) CalculationMode.ADVANCED else CalculationMode.QUICK,
+                            activityLevel = selectedActivity
+                        )
+                        onCalculate(measurements)
+                    } else {
+                        validationErrors = result.errors
+                    }
                 },
                 enabled = isFormValid
             )
