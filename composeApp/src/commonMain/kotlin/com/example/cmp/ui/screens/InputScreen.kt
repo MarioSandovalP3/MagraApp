@@ -34,7 +34,8 @@ fun InputScreen(
     goal: UserGoal,
     activityLevel: ActivityLevel,
     onCalculate: (UserMeasurements) -> Unit,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onOpenSettings: () -> Unit = {}
 ) {
     var isAdvancedMode by remember { mutableStateOf(true) }
     var selectedGender by remember { mutableStateOf(Gender.MALE) }
@@ -72,7 +73,7 @@ fun InputScreen(
                 .padding(top = 48.dp, bottom = 24.dp)
                 .navigationBarsPadding()
         ) {
-            // Header con botón atrás
+            // Header con botón atrás y menú
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
@@ -88,7 +89,7 @@ fun InputScreen(
                     Text("←", color = Color.White, fontSize = 20.sp)
                 }
                 Spacer(modifier = Modifier.width(16.dp))
-                Column {
+                Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = "Tus Medidas",
                         color = Color.White,
@@ -101,6 +102,9 @@ fun InputScreen(
                         fontSize = 13.sp,
                         fontWeight = FontWeight.Medium
                     )
+                }
+                IconButton(onClick = onOpenSettings) {
+                    Text("☰", fontSize = 24.sp, color = Color.White)
                 }
             }
 

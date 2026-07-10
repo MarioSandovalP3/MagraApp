@@ -63,13 +63,13 @@ fun WelcomeScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            // Header con botón de ajustes
+            // Header con botón de menú hamburguesa
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End
+                horizontalArrangement = Arrangement.Start
             ) {
                 IconButton(onClick = onOpenSettings) {
-                    Text(text = "⚙️", fontSize = 24.sp)
+                    Text(text = "☰", fontSize = 24.sp, color = Color.White)
                 }
             }
             // Header

@@ -32,7 +32,8 @@ fun HistoryScreen(
     entries: List<HistoryEntry>,
     onBack: () -> Unit,
     onClearHistory: () -> Unit,
-    onNewMeasurement: () -> Unit
+    onNewMeasurement: () -> Unit,
+    onOpenSettings: () -> Unit = {}
 ) {
     // Animación de entrada
     var visible by remember { mutableStateOf(false) }
@@ -93,6 +94,9 @@ fun HistoryScreen(
                             fontWeight = FontWeight.SemiBold
                         )
                     }
+                }
+                IconButton(onClick = onOpenSettings) {
+                    Text("☰", fontSize = 24.sp, color = Color.White)
                 }
             }
 

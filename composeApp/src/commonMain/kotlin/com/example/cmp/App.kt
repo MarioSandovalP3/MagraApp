@@ -26,35 +26,29 @@ enum class Screen {
     ACTIVITY,
     INPUT,
     RESULTS,
-    HISTORY
+    HISTORY,
+    AI_SETTINGS,
+    ABOUT
 }
 
 /**
  * Punto de entrada principal de la aplicación MagraApp.
- *
- * Gestiona la navegación entre pantallas usando estado Compose,
- * sin dependencias externas de navegación.
  */
 @Composable
 @Preview
 fun App() {
     MagraTheme {
-        // Inicializar repositorio con persistencia
         LaunchedEffect(Unit) {
             HistoryRepository.initialize()
         }
 
-        // Estado de navegación
         var currentScreen by remember { mutableStateOf(Screen.WELCOME) }
 
-        // Estado compartido entre pantallas
         var selectedGoal by remember { mutableStateOf(UserGoal.MAINTAIN) }
         var selectedActivity by remember { mutableStateOf(ActivityLevel.SEDENTARY) }
         var lastMeasurements by remember { mutableStateOf<UserMeasurements?>(null) }
         var lastResult by remember { mutableStateOf<BodyCompositionResult?>(null) }
         var historyEntries by remember { mutableStateOf(HistoryRepository.getHistory()) }
-
-        // Contador para generar fechas simples
         var measurementCount by remember { mutableIntStateOf(0) }
 
         val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -71,6 +65,12 @@ fun App() {
                     SettingsPanel(
                         onClose = {
                             coroutineScope.launch { drawerState.close() }
+                        },
+                        onOpenAiSettings = {
+                            currentScreen = Screen.AI_SETTINGS
+                        },
+                        onOpenAbout = {
+                            currentScreen = Screen.ABOUT
                         }
                     )
                 }
@@ -80,12 +80,10 @@ fun App() {
                 targetState = currentScreen,
             transitionSpec = {
                 when {
-                    // Ir hacia adelante
                     targetState.ordinal > initialState.ordinal -> {
                         (slideInHorizontally { it } + fadeIn()) togetherWith
                             (slideOutHorizontally { -it / 3 } + fadeOut())
                     }
-                    // Ir hacia atrás
                     else -> {
                         (slideInHorizontally { -it } + fadeIn()) togetherWith
                             (slideOutHorizontally { it / 3 } + fadeOut())
@@ -93,24 +91,15 @@ fun App() {
                 }
             }
         ) { screen ->
-            // Manejar botón de retroceso del dispositivo
             PlatformBackHandler {
                 when (currentScreen) {
-                    Screen.WELCOME -> {
-                        // En WELCOME se cierra la app (comportamiento por defecto)
-                    }
-                    Screen.ACTIVITY -> {
-                        currentScreen = Screen.WELCOME
-                    }
-                    Screen.INPUT -> {
-                        currentScreen = Screen.ACTIVITY
-                    }
-                    Screen.RESULTS -> {
-                        currentScreen = Screen.INPUT
-                    }
-                    Screen.HISTORY -> {
-                        currentScreen = if (lastResult != null) Screen.RESULTS else Screen.INPUT
-                    }
+                    Screen.WELCOME -> { }
+                    Screen.ACTIVITY -> currentScreen = Screen.WELCOME
+                    Screen.INPUT -> currentScreen = Screen.ACTIVITY
+                    Screen.RESULTS -> currentScreen = Screen.INPUT
+                    Screen.HISTORY -> currentScreen = if (lastResult != null) Screen.RESULTS else Screen.INPUT
+                    Screen.AI_SETTINGS -> currentScreen = Screen.WELCOME
+                    Screen.ABOUT -> currentScreen = Screen.WELCOME
                 }
             }
 
@@ -134,8 +123,9 @@ fun App() {
                             selectedActivity = activity
                             currentScreen = Screen.INPUT
                         },
-                        onBack = {
-                            currentScreen = Screen.WELCOME
+                        onBack = { currentScreen = Screen.WELCOME },
+                        onOpenSettings = {
+                            coroutineScope.launch { drawerState.open() }
                         }
                     )
                 }
@@ -149,8 +139,9 @@ fun App() {
                             lastResult = BodyCompositionCalculator.calculate(measurements)
                             currentScreen = Screen.RESULTS
                         },
-                        onBack = {
-                            currentScreen = Screen.ACTIVITY
+                        onBack = { currentScreen = Screen.ACTIVITY },
+                        onOpenSettings = {
+                            coroutineScope.launch { drawerState.open() }
                         }
                     )
                 }
@@ -158,11 +149,8 @@ fun App() {
                 Screen.RESULTS -> {
                     val result = lastResult
                     val measurements = lastMeasurements
-
                     if (result != null && measurements != null) {
-                        // Obtener la última entrada del historial para comparación
                         val previousEntry = historyEntries.firstOrNull()
-
                         ResultsScreen(
                             result = result,
                             measurements = measurements,
@@ -170,24 +158,22 @@ fun App() {
                             previousEntry = previousEntry,
                             onSaveToHistory = {
                                 measurementCount++
-                                val dateString = "Medición #$measurementCount"
                                 HistoryRepository.addEntry(
                                     measurements = measurements,
                                     result = result,
                                     goal = selectedGoal,
-                                    dateString = dateString
+                                    dateString = "Medición #$measurementCount"
                                 )
                                 historyEntries = HistoryRepository.getHistory()
                             },
-                            onNewMeasurement = {
-                                currentScreen = Screen.ACTIVITY
-                            },
+                            onNewMeasurement = { currentScreen = Screen.ACTIVITY },
                             onViewHistory = {
                                 historyEntries = HistoryRepository.getHistory()
                                 currentScreen = Screen.HISTORY
                             },
-                            onBack = {
-                                currentScreen = Screen.INPUT
+                            onBack = { currentScreen = Screen.INPUT },
+                            onOpenSettings = {
+                                coroutineScope.launch { drawerState.open() }
                             }
                         )
                     }
@@ -196,16 +182,27 @@ fun App() {
                 Screen.HISTORY -> {
                     HistoryScreen(
                         entries = historyEntries,
-                        onBack = {
-                            currentScreen = if (lastResult != null) Screen.RESULTS else Screen.INPUT
-                        },
+                        onBack = { currentScreen = if (lastResult != null) Screen.RESULTS else Screen.INPUT },
                         onClearHistory = {
                             HistoryRepository.clearHistory()
                             historyEntries = HistoryRepository.getHistory()
                         },
-                        onNewMeasurement = {
-                            currentScreen = Screen.ACTIVITY
+                        onNewMeasurement = { currentScreen = Screen.ACTIVITY },
+                        onOpenSettings = {
+                            coroutineScope.launch { drawerState.open() }
                         }
+                    )
+                }
+
+                Screen.AI_SETTINGS -> {
+                    AiSettingsScreen(
+                        onBack = { currentScreen = Screen.WELCOME }
+                    )
+                }
+
+                Screen.ABOUT -> {
+                    AboutScreen(
+                        onBack = { currentScreen = Screen.WELCOME }
                     )
                 }
             }

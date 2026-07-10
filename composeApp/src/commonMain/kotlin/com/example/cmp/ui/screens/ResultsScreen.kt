@@ -41,7 +41,8 @@ fun ResultsScreen(
     onSaveToHistory: () -> Unit,
     onNewMeasurement: () -> Unit,
     onViewHistory: () -> Unit,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onOpenSettings: () -> Unit = {}
 ) {
     val scrollState = rememberScrollState()
     var saved by remember { mutableStateOf(false) }
@@ -144,7 +145,7 @@ fun ResultsScreen(
                     Text("←", color = Color.White, fontSize = 20.sp)
                 }
                 Spacer(modifier = Modifier.width(16.dp))
-                Column {
+                Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = "Tus Resultados",
                         color = Color.White,
@@ -157,6 +158,9 @@ fun ResultsScreen(
                         fontSize = 13.sp,
                         fontWeight = FontWeight.Medium
                     )
+                }
+                IconButton(onClick = onOpenSettings) {
+                    Text("☰", fontSize = 24.sp, color = Color.White)
                 }
             }
 
