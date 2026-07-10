@@ -19,6 +19,7 @@ import com.example.cmp.data.AiSettings
 import com.example.cmp.data.StorageManager
 import com.example.cmp.domain.AiRecommendationService
 import com.example.cmp.ui.components.GlassCard
+import com.example.cmp.ui.components.BackIcon
 import com.example.cmp.ui.theme.MagraColors
 import com.example.cmp.ui.theme.MagraGradients
 import kotlinx.coroutines.launch
@@ -59,15 +60,14 @@ fun AiSettingsScreen(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Box(
+                IconButton(
+                    onClick = onBack,
                     modifier = Modifier
                         .size(40.dp)
                         .clip(RoundedCornerShape(12.dp))
                         .background(Color.White.copy(alpha = 0.08f))
-                        .clickable(onClick = onBack),
-                    contentAlignment = Alignment.Center
                 ) {
-                    Text("←", color = Color.White, fontSize = 20.sp)
+                    BackIcon(color = Color.White)
                 }
                 Spacer(modifier = Modifier.width(16.dp))
                 Text(

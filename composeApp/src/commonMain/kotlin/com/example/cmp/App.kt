@@ -101,8 +101,14 @@ fun App() {
                     Screen.INPUT -> currentScreen = Screen.ACTIVITY
                     Screen.RESULTS -> currentScreen = Screen.INPUT
                     Screen.HISTORY -> currentScreen = if (lastResult != null) Screen.RESULTS else Screen.INPUT
-                    Screen.AI_SETTINGS -> currentScreen = Screen.WELCOME
-                    Screen.ABOUT -> currentScreen = Screen.WELCOME
+                    Screen.AI_SETTINGS -> {
+                        currentScreen = previousScreen
+                        coroutineScope.launch { drawerState.open() }
+                    }
+                    Screen.ABOUT -> {
+                        currentScreen = previousScreen
+                        coroutineScope.launch { drawerState.open() }
+                    }
                 }
             }
 
@@ -199,13 +205,19 @@ fun App() {
 
                 Screen.AI_SETTINGS -> {
                     AiSettingsScreen(
-                        onBack = { currentScreen = previousScreen }
+                        onBack = {
+                            currentScreen = previousScreen
+                            coroutineScope.launch { drawerState.open() }
+                        }
                     )
                 }
 
                 Screen.ABOUT -> {
                     AboutScreen(
-                        onBack = { currentScreen = previousScreen }
+                        onBack = {
+                            currentScreen = previousScreen
+                            coroutineScope.launch { drawerState.open() }
+                        }
                     )
                 }
             }

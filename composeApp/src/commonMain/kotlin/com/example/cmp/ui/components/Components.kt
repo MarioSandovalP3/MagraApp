@@ -654,3 +654,47 @@ private fun roundToOneDecimal(value: Float): String {
     }
 }
 
+// ═══════════════════════════════════════════════════════════════
+// BACK ICON - Ícono de regresar dibujado con Canvas
+// ═══════════════════════════════════════════════════════════════
+
+@Composable
+fun BackIcon(
+    modifier: Modifier = Modifier,
+    color: Color = Color.White
+) {
+    Canvas(modifier = modifier.size(24.dp)) {
+        val width = size.width
+        val height = size.height
+        val strokeWidthPx = 2.5.dp.toPx()
+
+        // Línea horizontal
+        drawLine(
+            color = color,
+            start = Offset(width * 0.25f, height * 0.5f),
+            end = Offset(width * 0.75f, height * 0.5f),
+            strokeWidth = strokeWidthPx,
+            cap = StrokeCap.Round
+        )
+
+        // Línea superior de la flecha
+        drawLine(
+            color = color,
+            start = Offset(width * 0.25f, height * 0.5f),
+            end = Offset(width * 0.5f, height * 0.25f),
+            strokeWidth = strokeWidthPx,
+            cap = StrokeCap.Round
+        )
+
+        // Línea inferior de la flecha
+        drawLine(
+            color = color,
+            start = Offset(width * 0.25f, height * 0.5f),
+            end = Offset(width * 0.5f, height * 0.75f),
+            strokeWidth = strokeWidthPx,
+            cap = StrokeCap.Round
+        )
+    }
+}
+
+

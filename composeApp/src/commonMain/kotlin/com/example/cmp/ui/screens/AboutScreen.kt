@@ -22,6 +22,8 @@ import androidx.compose.ui.unit.sp
 import com.example.cmp.ui.theme.MagraColors
 import com.example.cmp.ui.theme.MagraGradients
 
+import com.example.cmp.ui.components.BackIcon
+
 @Composable
 fun AboutScreen(onBack: () -> Unit) {
     var visible by remember { mutableStateOf(false) }
@@ -35,10 +37,12 @@ fun AboutScreen(onBack: () -> Unit) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start) {
-                Box(
-                    modifier = Modifier.size(40.dp).clip(CircleShape).background(Color.White.copy(alpha = 0.08f)).clickable(onClick = onBack),
-                    contentAlignment = Alignment.Center
-                ) { Text("←", color = Color.White, fontSize = 20.sp) }
+                IconButton(
+                    onClick = onBack,
+                    modifier = Modifier.size(40.dp).clip(CircleShape).background(Color.White.copy(alpha = 0.08f))
+                ) {
+                    BackIcon(color = Color.White)
+                }
             }
             Spacer(modifier = Modifier.height(32.dp))
             Box(
