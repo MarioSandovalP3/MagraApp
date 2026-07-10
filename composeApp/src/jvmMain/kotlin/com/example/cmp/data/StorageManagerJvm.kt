@@ -32,3 +32,17 @@ actual object PlatformStorage {
  * Implementación JVM del timestamp.
  */
 actual fun platformCurrentTimeMillis(): Long = System.currentTimeMillis()
+
+/**
+ * Implementación JVM de copiar al portapapeles.
+ */
+actual fun platformCopyToClipboard(text: String) {
+    try {
+        val clipboard = java.awt.Toolkit.getDefaultToolkit().systemClipboard
+        val selection = java.awt.datatransfer.StringSelection(text)
+        clipboard.setContents(selection, null)
+        println("📋 Texto copiado al portapapeles")
+    } catch (e: Exception) {
+        println("Error al copiar al portapapeles: ${e.message}")
+    }
+}

@@ -24,6 +24,7 @@ import com.example.cmp.domain.AiRecommendationService
 import com.example.cmp.domain.GoalRecommendations
 import com.example.cmp.domain.Recommendation
 import com.example.cmp.domain.RecommendationType
+import com.example.cmp.domain.generateShareText
 import com.example.cmp.ui.components.*
 import com.example.cmp.ui.theme.MagraColors
 import com.example.cmp.ui.theme.MagraGradients
@@ -53,6 +54,15 @@ fun ResultsScreen(
     // Animación de entrada
     var visible by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) { visible = true }
+
+    // Estado para feedback de copiado
+    var copiedMessage by remember { mutableStateOf(false) }
+    if (copiedMessage) {
+        LaunchedEffect(copiedMessage) {
+            kotlinx.coroutines.delay(2000)
+            copiedMessage = false
+        }
+    }
 
     // IA
     var aiRecommendation by remember { mutableStateOf<String?>(null) }
@@ -428,6 +438,55 @@ fun ResultsScreen(
                                 fontWeight = FontWeight.SemiBold
                             )
                         }
+                    }
+                }
+            }
+
+            // Botones de compartir / copiar
+            AnimatedVisibility(
+                visible = visible,
+                enter = fadeIn(tween(600, delayMillis = 850)) + slideInVertically(
+                    tween(600, delayMillis = 850)
+                ) { 40 }
+            ) {
+                Column {
+                    HorizontalDivider(
+                        color = MagraColors.GlassBorder,
+                        thickness = 1.dp,
+                        modifier = Modifier.padding(bottom = 16.dp)
+                    )
+
+                    OutlinedButton(
+                        onClick = {
+                            val text = generateShareText(
+                                result = result,
+                                measurements = measurements,
+                                goal = goal,
+                                aiRecommendation = aiRecommendation,
+                                recommendations = recommendations
+                            )
+                            platformCopyToClipboard(text)
+                            copiedMessage = true
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(48.dp),
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            contentColor = if (copiedMessage) Color(0xFF00C853) else MagraColors.Accent
+                        ),
+                        border = ButtonDefaults.outlinedButtonBorder(enabled = true).copy(
+                            brush = androidx.compose.ui.graphics.SolidColor(
+                                if (copiedMessage) Color(0xFF00C853).copy(alpha = 0.5f)
+                                else MagraColors.Accent.copy(alpha = 0.5f)
+                            )
+                        ),
+                        shape = RoundedCornerShape(14.dp)
+                    ) {
+                        Text(
+                            text = if (copiedMessage) "✅ ¡Copiado al portapapeles!" else "📋 Copiar y Compartir",
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.SemiBold
+                        )
                     }
                 }
             }

@@ -25,6 +25,11 @@ actual object PlatformStorage {
         appContext = context.applicationContext
     }
 
+    /**
+     * Expone el contexto para otras funciones (como compartir).
+     */
+    fun getContext(): Context? = appContext
+
     actual fun write(key: String, data: String) {
         val context = appContext ?: return
         context.openFileOutput("$key.json", Context.MODE_PRIVATE).use {
@@ -46,3 +51,15 @@ actual object PlatformStorage {
  * Implementación Android del timestamp.
  */
 actual fun platformCurrentTimeMillis(): Long = System.currentTimeMillis()
+
+
+/**
+ * Implementación Android de copiar al portapapeles.
+ * Copia el texto sin abrir ninguna interfaz.
+ */
+actual fun platformCopyToClipboard(text: String) {
+    val context = PlatformStorage.getContext() ?: return
+    val clipboard = context.getSystemService(android.content.Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
+    val clip = android.content.ClipData.newPlainText("MagraApp", text)
+    clipboard.setPrimaryClip(clip)
+}

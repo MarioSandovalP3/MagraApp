@@ -98,3 +98,8 @@ expect object PlatformStorage {
  * Obtiene el timestamp actual en milisegundos (epoch).
  */
 expect fun platformCurrentTimeMillis(): Long
+
+/**
+ * Copia texto al portapapeles del sistema sin abrir interfaz.
+ */
+expect fun platformCopyToClipboard(text: String)
