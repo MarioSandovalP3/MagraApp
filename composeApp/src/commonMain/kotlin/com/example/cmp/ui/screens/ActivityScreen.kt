@@ -42,7 +42,7 @@ fun ActivityScreen(
         modifier = Modifier.fillMaxSize().background(MagraGradients.Background)
     ) {
         Column(
-            modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 28.dp).padding(top = 16.dp, bottom = 32.dp),
+            modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 28.dp).padding(top = 48.dp, bottom = 32.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             AnimatedVisibility(
@@ -57,8 +57,11 @@ fun ActivityScreen(
                         ) {
                             BackIcon(color = Color.White)
                         }
-                        IconButton(onClick = onOpenSettings) {
-                            Text("☰", fontSize = 24.sp, color = Color.White)
+                        IconButton(
+                            onClick = onOpenSettings,
+                            modifier = Modifier.size(40.dp).clip(CircleShape).background(Color.White.copy(alpha = 0.08f))
+                        ) {
+                            Text("☰", fontSize = 20.sp, color = Color.White)
                         }
                     }
                     Spacer(modifier = Modifier.height(24.dp))
