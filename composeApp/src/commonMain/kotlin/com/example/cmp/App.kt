@@ -93,6 +93,27 @@ fun App() {
                 }
             }
         ) { screen ->
+            // Manejar botón de retroceso del dispositivo
+            PlatformBackHandler {
+                when (currentScreen) {
+                    Screen.WELCOME -> {
+                        // En WELCOME se cierra la app (comportamiento por defecto)
+                    }
+                    Screen.ACTIVITY -> {
+                        currentScreen = Screen.WELCOME
+                    }
+                    Screen.INPUT -> {
+                        currentScreen = Screen.ACTIVITY
+                    }
+                    Screen.RESULTS -> {
+                        currentScreen = Screen.INPUT
+                    }
+                    Screen.HISTORY -> {
+                        currentScreen = if (lastResult != null) Screen.RESULTS else Screen.INPUT
+                    }
+                }
+            }
+
             when (screen) {
                 Screen.WELCOME -> {
                     WelcomeScreen(
