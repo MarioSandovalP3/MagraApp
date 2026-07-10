@@ -147,20 +147,24 @@ object GoalRecommendations {
 
         // Evaluar FFMI
         if (result.mode == CalculationMode.ADVANCED) {
+            val belowAverageLimit = if (result.gender == Gender.MALE) 18.0 else 15.0
+            val aboveAverageLimit = if (result.gender == Gender.MALE) 22.0 else 18.0
+            val athleteLimit = if (result.gender == Gender.MALE) 25.0 else 20.0
+
             val ffmiMsg = when {
-                result.ffmi < 18 -> Recommendation(
+                result.ffmi < belowAverageLimit -> Recommendation(
                     emoji = "📊",
                     title = "FFMI: Espacio para crecer",
                     message = "Tu FFMI (${result.ffmi}) indica que tienes buen potencial de ganancia muscular. Con entrenamiento progresivo puedes mejorar significativamente.",
                     type = RecommendationType.ACTION
                 )
-                result.ffmi < 22 -> Recommendation(
+                result.ffmi < aboveAverageLimit -> Recommendation(
                     emoji = "💪",
                     title = "FFMI: Buen desarrollo",
-                    message = "Tu FFMI (${result.ffmi}) muestra un desarrollo muscular por encima del promedio. Sigue con el entrenamiento progresivo.",
+                    message = "Tu FFMI (${result.ffmi}) muestra un desarrollo muscular adecuado. Sigue con el entrenamiento progresivo.",
                     type = RecommendationType.SUCCESS
                 )
-                result.ffmi < 25 -> Recommendation(
+                result.ffmi < athleteLimit -> Recommendation(
                     emoji = "🏆",
                     title = "FFMI: Nivel atlético",
                     message = "Tu FFMI (${result.ffmi}) es excelente. Estás cerca del límite natural de desarrollo muscular.",

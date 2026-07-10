@@ -118,11 +118,14 @@ object AiRecommendationService {
             - Índice de masa libre de grasa (FFMI): ${result.ffmi}
             - Categoría de composición: ${result.category.displayName}
             - Riesgo cardiovascular (ICA): ${result.cardiovascularRisk.displayName}
+            - Tasa metabólica basal (TMB): ${result.bmr.toInt()} kcal
+            - Gasto energético diario total (TDEE): ${result.tdee.toInt()} kcal
+            - Calorías objetivo recomendadas: ${result.targetCalories.toInt()} kcal/día
             $activitySection
             
             Mi objetivo actual es: ${goal.displayName} (${goal.description}).
             
-            Interpreta estos datos según mi nivel de actividad y dame recomendaciones personalizadas de nutrición y entrenamiento para lograr mi objetivo de forma saludable.
+            Interpreta estos datos según mi nivel de actividad y dame recomendaciones personalizadas de nutrición y entrenamiento para lograr mi objetivo de forma saludable. Recomendando cómo distribuir estas calorías y macronutrientes.
         """.trimIndent()
     }
 }

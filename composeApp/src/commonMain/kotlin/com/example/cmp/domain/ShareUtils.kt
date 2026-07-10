@@ -38,6 +38,9 @@ fun generateShareText(
     if (result.waistToHeightRatio > 0) {
         sb.appendLine("   ${result.cardiovascularRisk.emoji} ICA: ${result.waistToHeightRatio} (${result.cardiovascularRisk.displayName})")
     }
+    sb.appendLine("   🔥 TMB (Metabolismo Basal): ${result.bmr.toInt()} kcal")
+    sb.appendLine("   ⚡ TDEE (Gasto Diario): ${result.tdee.toInt()} kcal")
+    sb.appendLine("   🎯 Calorías Objetivo: ${result.targetCalories.toInt()} kcal/día")
     sb.appendLine()
     sb.appendLine("📋 Clasificación ACSM: ${result.category.emoji} ${result.category.displayName}")
 

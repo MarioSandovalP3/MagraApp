@@ -90,7 +90,11 @@ fun ResultsScreen(
         "FFMI" to Pair("📊 FFMI - Índice de Masa Libre de Grasa",
             "El FFMI (Fat-Free Mass Index) es como el IMC pero solo para masa muscular. " +
             "Elimina la grasa corporal del cálculo, dando una medida real de tu desarrollo muscular. " +
-            "\n\n• < 18: Por debajo del promedio\n• 18-20: Promedio\n• 20-22: Sobre el promedio\n• 22-25: Nivel atlético\n• > 25: Nivel élite (posible uso de sustancias)"),
+            if (result.gender == Gender.MALE) {
+                "\n\nRango Hombres:\n• < 18.0: Por debajo del promedio\n• 18.0-20.0: Promedio\n• 20.0-22.0: Sobre el promedio\n• 22.0-25.0: Nivel atlético\n• ≥ 25.0: Nivel élite (límite natural)"
+            } else {
+                "\n\nRango Mujeres:\n• < 15.0: Por debajo del promedio\n• 15.0-17.0: Promedio\n• 17.0-18.0: Sobre el promedio\n• 18.0-20.0: Nivel atlético\n• ≥ 20.0: Nivel élite (límite natural)"
+            }),
         "ICA" to Pair("${result.cardiovascularRisk.emoji} ICA - Índice Cintura-Altura",
             "El ICA (Waist-to-Height Ratio) mide la grasa abdominal dividiendo la cintura entre la estatura. " +
             "Es uno de los mejores predictores de riesgo cardiovascular y metabólico. " +
@@ -99,7 +103,17 @@ fun ResultsScreen(
             "El IMC (Body Mass Index) es una medida básica que relaciona peso y estatura. " +
             "Su principal limitación es que NO distingue entre grasa y músculo. " +
             "\n\n• < 18.5: Bajo peso\n• 18.5-24.9: Normal\n• 25-29.9: Sobrepeso\n• ≥ 30: Obesidad" +
-            "\n\n⚠️ MagraApp usa el Método de la Marina para superar esta limitación.")
+            "\n\n⚠️ MagraApp usa el Método de la Marina para superar esta limitación."),
+        "BMR" to Pair("🔥 TMB - Tasa Metabólica Basal",
+            "La Tasa Metabólica Basal (BMR) representa la cantidad mínima de energía (calorías) que tu cuerpo necesita para sobrevivir en reposo absoluto." +
+            "\n\n• En modo avanzado se calcula con la ecuación de Katch-McArdle, que es más exacta porque utiliza tu masa libre de grasa en lugar del peso total."),
+        "TDEE" to Pair("⚡ GEDT - Gasto Energético Diario Total",
+            "El Gasto Energético Diario Total (TDEE) es una estimación de las calorías que quemas al día, combinando tu metabolismo basal con tu nivel de actividad física."),
+        "CALORIES" to Pair("🎯 Calorías Objetivo",
+            "Es el consumo de energía diaria recomendado para lograr tu meta:" +
+            "\n\n• Perder Grasa: Déficit saludable de 500 kcal sobre tu TDEE." +
+            "\n• Ganar Músculo: Superávit limpio de 300 kcal sobre tu TDEE para fomentar la síntesis de proteína sin acumular grasa excesiva." +
+            "\n• Mantenerse: Consumo equivalente a tu TDEE.")
     )
 
     // Color según categoría
@@ -279,12 +293,22 @@ fun ResultsScreen(
                             emoji = "📊",
                             title = "FFMI (Índice de Masa Libre de Grasa)",
                             value = "${result.ffmi}",
-                            subtitle = when {
-                                result.ffmi < 18 -> "Por debajo del promedio"
-                                result.ffmi < 20 -> "Promedio"
-                                result.ffmi < 22 -> "Por encima del promedio"
-                                result.ffmi < 25 -> "Excelente — nivel atlético"
-                                else -> "Excepcional — nivel élite"
+                            subtitle = if (result.gender == Gender.MALE) {
+                                when {
+                                    result.ffmi < 18.0 -> "Por debajo del promedio"
+                                    result.ffmi < 20.0 -> "Promedio"
+                                    result.ffmi < 22.0 -> "Por encima del promedio"
+                                    result.ffmi < 25.0 -> "Excelente — nivel atlético"
+                                    else -> "Superior — nivel élite"
+                                }
+                            } else {
+                                when {
+                                    result.ffmi < 15.0 -> "Por debajo del promedio"
+                                    result.ffmi < 17.0 -> "Promedio"
+                                    result.ffmi < 18.0 -> "Por encima del promedio"
+                                    result.ffmi < 20.0 -> "Excelente — nivel atlético"
+                                    else -> "Superior — nivel élite"
+                                }
                             },
                             accentColor = MagraColors.Accent,
                             onInfoClick = { infoDialogType = "FFMI" }
@@ -320,6 +344,50 @@ fun ResultsScreen(
                         accentColor = MagraColors.TextSecondary,
                         onInfoClick = { infoDialogType = "IMC" }
                     )
+
+                    // Sección de Metabolismo y Calorías
+                    Spacer(modifier = Modifier.height(16.dp))
+                    SectionHeader("🔥 METABOLISMO Y CALORÍAS")
+
+                    // Target Calories
+                    MetricCard(
+                        emoji = "🎯",
+                        title = "Calorías Objetivo",
+                        value = "${result.targetCalories.toInt()} kcal / día",
+                        subtitle = when (goal) {
+                            UserGoal.LOSE_FAT -> "Déficit calórico para oxidación de grasa"
+                            UserGoal.GAIN_MUSCLE -> "Superávit calórico para hipertrofia"
+                            UserGoal.MAINTAIN -> "Calorías de mantenimiento"
+                        },
+                        accentColor = MagraColors.Primary,
+                        onInfoClick = { infoDialogType = "CALORIES" }
+                    )
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        Box(modifier = Modifier.weight(1f)) {
+                            MetricCard(
+                                emoji = "🔥",
+                                title = "Metabolismo Basal (TMB)",
+                                value = "${result.bmr.toInt()} kcal",
+                                subtitle = "Energía vital en reposo",
+                                accentColor = MagraColors.TextSecondary,
+                                onInfoClick = { infoDialogType = "BMR" }
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(12.dp))
+                        Box(modifier = Modifier.weight(1f)) {
+                            MetricCard(
+                                emoji = "⚡",
+                                title = "Gasto Diario (TDEE)",
+                                value = "${result.tdee.toInt()} kcal",
+                                subtitle = "Quemado estimado",
+                                accentColor = MagraColors.TextSecondary,
+                                onInfoClick = { infoDialogType = "TDEE" }
+                            )
+                        }
+                    }
                 }
             }
 

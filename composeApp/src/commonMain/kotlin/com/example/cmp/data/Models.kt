@@ -121,7 +121,10 @@ data class BodyCompositionResult(
     val category: BodyCategory,
     val cardiovascularRisk: CardiovascularRisk,
     val mode: CalculationMode,
-    val gender: Gender
+    val gender: Gender,
+    val bmr: Double = 0.0,
+    val tdee: Double = 0.0,
+    val targetCalories: Double = 0.0
 )
 
 /**

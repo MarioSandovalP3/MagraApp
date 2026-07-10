@@ -19,13 +19,13 @@ object BodyCompositionCalculator {
     /**
      * Calcula el resultado completo de composición corporal.
      */
-    fun calculate(measurements: UserMeasurements): BodyCompositionResult {
+    fun calculate(measurements: UserMeasurements, goal: UserGoal = UserGoal.MAINTAIN): BodyCompositionResult {
         val heightM = measurements.heightCm / 100.0
         val bmi = calculateBMI(measurements.weightKg, heightM)
 
         return when (measurements.mode) {
-            CalculationMode.QUICK -> calculateQuickMode(measurements, bmi, heightM)
-            CalculationMode.ADVANCED -> calculateAdvancedMode(measurements, bmi, heightM)
+            CalculationMode.QUICK -> calculateQuickMode(measurements, bmi, heightM, goal)
+            CalculationMode.ADVANCED -> calculateAdvancedMode(measurements, bmi, heightM, goal)
         }
     }
 
@@ -38,32 +38,28 @@ object BodyCompositionCalculator {
     private fun calculateQuickMode(
         measurements: UserMeasurements,
         bmi: Double,
-        heightM: Double
+        heightM: Double,
+        goal: UserGoal
     ): BodyCompositionResult {
         val sexFactor = if (measurements.gender == Gender.MALE) 1.0 else 0.0
         val bodyFatPercentage = (1.20 * bmi + 0.23 * measurements.age - 10.8 * sexFactor - 5.4)
             .coerceIn(2.0, 60.0)
 
-        return buildResult(measurements, bodyFatPercentage, bmi, heightM)
+        return buildResult(measurements, bodyFatPercentage, bmi, heightM, goal)
     }
 
     /**
      * Modo avanzado: Método de la Marina de EE.UU.
      * Ecuaciones de Hodgdon & Beckett (en centímetros, logaritmos base 10).
-     *
-     * Hombres:
-     * %GC = 495 / (1.0324 − 0.19077 × log10(cintura − cuello) + 0.15456 × log10(estatura)) − 450
-     *
-     * Mujeres:
-     * %GC = 495 / (1.29579 − 0.35004 × log10(cintura + cadera − cuello) + 0.22100 × log10(estatura)) − 450
      */
     private fun calculateAdvancedMode(
         measurements: UserMeasurements,
         bmi: Double,
-        heightM: Double
+        heightM: Double,
+        goal: UserGoal
     ): BodyCompositionResult {
         val bodyFatPercentage = calculateNavyBodyFat(measurements).coerceIn(2.0, 60.0)
-        return buildResult(measurements, bodyFatPercentage, bmi, heightM)
+        return buildResult(measurements, bodyFatPercentage, bmi, heightM, goal)
     }
 
     /**
@@ -103,7 +99,8 @@ object BodyCompositionCalculator {
         measurements: UserMeasurements,
         bodyFatPercentage: Double,
         bmi: Double,
-        heightM: Double
+        heightM: Double,
+        goal: UserGoal
     ): BodyCompositionResult {
         val fatMassKg = measurements.weightKg * (bodyFatPercentage / 100.0)
         val leanMassKg = measurements.weightKg - fatMassKg
@@ -121,6 +118,39 @@ object BodyCompositionCalculator {
         val category = BodyCategory.fromBodyFat(bodyFatPercentage, measurements.gender)
         val cardiovascularRisk = classifyCardiovascularRisk(waistToHeightRatio)
 
+        // BMR (Tasa Metabólica Basal)
+        val bmr = if (measurements.mode == CalculationMode.ADVANCED && leanMassKg > 0.0) {
+            // Katch-McArdle: 370 + 21.6 * Masa Magra (kg)
+            370.0 + 21.6 * leanMassKg
+        } else {
+            // Mifflin-St Jeor
+            if (measurements.gender == Gender.MALE) {
+                10.0 * measurements.weightKg + 6.25 * measurements.heightCm - 5.0 * measurements.age + 5.0
+            } else {
+                10.0 * measurements.weightKg + 6.25 * measurements.heightCm - 5.0 * measurements.age - 161.0
+            }
+        }
+
+        // TDEE (Gasto Energético Diario Total)
+        val activityMultiplier = when (measurements.activityLevel) {
+            ActivityLevel.SEDENTARY -> 1.2
+            ActivityLevel.GENERAL_ACTIVE -> 1.375
+            ActivityLevel.ENDURANCE -> 1.55
+            ActivityLevel.FITNESS_STRENGTH -> 1.65
+        }
+        val tdee = bmr * activityMultiplier
+
+        // Calorías Objetivo según meta
+        val targetCalories = when (goal) {
+            UserGoal.LOSE_FAT -> {
+                val deficit = tdee - 500.0
+                val minCalories = if (measurements.gender == Gender.MALE) 1500.0 else 1200.0
+                deficit.coerceAtLeast(minCalories).coerceAtLeast(bmr)
+            }
+            UserGoal.GAIN_MUSCLE -> tdee + 300.0
+            UserGoal.MAINTAIN -> tdee
+        }
+
         return BodyCompositionResult(
             bodyFatPercentage = bodyFatPercentage.roundTo(1),
             fatMassKg = fatMassKg.roundTo(1),
@@ -131,7 +161,10 @@ object BodyCompositionCalculator {
             category = category,
             cardiovascularRisk = cardiovascularRisk,
             mode = measurements.mode,
-            gender = measurements.gender
+            gender = measurements.gender,
+            bmr = bmr.roundTo(0),
+            tdee = tdee.roundTo(0),
+            targetCalories = targetCalories.roundTo(0)
         )
     }
 

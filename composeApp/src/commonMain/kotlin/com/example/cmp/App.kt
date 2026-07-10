@@ -145,7 +145,7 @@ fun App() {
                         activityLevel = selectedActivity,
                         onCalculate = { measurements ->
                             lastMeasurements = measurements
-                            lastResult = BodyCompositionCalculator.calculate(measurements)
+                            lastResult = BodyCompositionCalculator.calculate(measurements, selectedGoal)
                             currentScreen = Screen.RESULTS
                         },
                         onBack = { currentScreen = Screen.ACTIVITY },
