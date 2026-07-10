@@ -32,12 +32,12 @@ import com.example.cmp.ui.theme.MagraGradients
 @Composable
 fun InputScreen(
     goal: UserGoal,
+    activityLevel: ActivityLevel,
     onCalculate: (UserMeasurements) -> Unit,
     onBack: () -> Unit
 ) {
     var isAdvancedMode by remember { mutableStateOf(true) }
     var selectedGender by remember { mutableStateOf(Gender.MALE) }
-    var selectedActivity by remember { mutableStateOf(ActivityLevel.SEDENTARY) }
 
     // Campos de texto
     var age by remember { mutableStateOf("") }
@@ -167,13 +167,29 @@ fun InputScreen(
                 )
             }
 
-            // Activity Level Selection
-            Spacer(modifier = Modifier.height(20.dp))
-            SectionHeader("NIVEL DE ACTIVIDAD")
-            ActivityLevelSelector(
-                selected = selectedActivity,
-                onSelected = { selectedActivity = it }
-            )
+            // Mostrar nivel de actividad seleccionado
+            Spacer(modifier = Modifier.height(12.dp))
+            GlassCard(modifier = Modifier.fillMaxWidth()) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(text = activityLevel.emoji, fontSize = 22.sp)
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Column {
+                        Text(
+                            text = "Nivel de actividad",
+                            color = MagraColors.TextMuted,
+                            fontSize = 11.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            letterSpacing = 1.5.sp
+                        )
+                        Text(
+                            text = activityLevel.displayName,
+                            color = MagraColors.Primary,
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
+            }
 
             Spacer(modifier = Modifier.height(20.dp))
 
@@ -345,7 +361,7 @@ fun InputScreen(
                             waistCm = waistVal,
                             hipCm = hipVal,
                             mode = if (isAdvancedMode) CalculationMode.ADVANCED else CalculationMode.QUICK,
-                            activityLevel = selectedActivity
+                            activityLevel = activityLevel
                         )
                         onCalculate(measurements)
                     } else {

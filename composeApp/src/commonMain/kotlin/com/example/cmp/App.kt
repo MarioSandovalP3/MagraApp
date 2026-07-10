@@ -23,6 +23,7 @@ import kotlinx.coroutines.launch
  */
 enum class Screen {
     WELCOME,
+    ACTIVITY,
     INPUT,
     RESULTS,
     HISTORY
@@ -48,6 +49,7 @@ fun App() {
 
         // Estado compartido entre pantallas
         var selectedGoal by remember { mutableStateOf(UserGoal.MAINTAIN) }
+        var selectedActivity by remember { mutableStateOf(ActivityLevel.SEDENTARY) }
         var lastMeasurements by remember { mutableStateOf<UserMeasurements?>(null) }
         var lastResult by remember { mutableStateOf<BodyCompositionResult?>(null) }
         var historyEntries by remember { mutableStateOf(HistoryRepository.getHistory()) }
@@ -96,7 +98,7 @@ fun App() {
                     WelcomeScreen(
                         onGoalSelected = { goal ->
                             selectedGoal = goal
-                            currentScreen = Screen.INPUT
+                            currentScreen = Screen.ACTIVITY
                         },
                         onOpenSettings = {
                             coroutineScope.launch { drawerState.open() }
@@ -104,16 +106,30 @@ fun App() {
                     )
                 }
 
+                Screen.ACTIVITY -> {
+                    ActivityScreen(
+                        goal = selectedGoal,
+                        onContinue = { activity ->
+                            selectedActivity = activity
+                            currentScreen = Screen.INPUT
+                        },
+                        onBack = {
+                            currentScreen = Screen.WELCOME
+                        }
+                    )
+                }
+
                 Screen.INPUT -> {
                     InputScreen(
                         goal = selectedGoal,
+                        activityLevel = selectedActivity,
                         onCalculate = { measurements ->
                             lastMeasurements = measurements
                             lastResult = BodyCompositionCalculator.calculate(measurements)
                             currentScreen = Screen.RESULTS
                         },
                         onBack = {
-                            currentScreen = Screen.WELCOME
+                            currentScreen = Screen.ACTIVITY
                         }
                     )
                 }
@@ -143,7 +159,7 @@ fun App() {
                                 historyEntries = HistoryRepository.getHistory()
                             },
                             onNewMeasurement = {
-                                currentScreen = Screen.INPUT
+                                currentScreen = Screen.ACTIVITY
                             },
                             onViewHistory = {
                                 historyEntries = HistoryRepository.getHistory()
@@ -167,7 +183,7 @@ fun App() {
                             historyEntries = HistoryRepository.getHistory()
                         },
                         onNewMeasurement = {
-                            currentScreen = Screen.INPUT
+                            currentScreen = Screen.ACTIVITY
                         }
                     )
                 }
