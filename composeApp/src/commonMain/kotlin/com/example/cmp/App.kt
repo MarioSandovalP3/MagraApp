@@ -43,6 +43,7 @@ fun App() {
         }
 
         var currentScreen by remember { mutableStateOf(Screen.WELCOME) }
+        var previousScreen by remember { mutableStateOf(Screen.WELCOME) }
 
         var selectedGoal by remember { mutableStateOf(UserGoal.MAINTAIN) }
         var selectedActivity by remember { mutableStateOf(ActivityLevel.SEDENTARY) }
@@ -67,9 +68,11 @@ fun App() {
                             coroutineScope.launch { drawerState.close() }
                         },
                         onOpenAiSettings = {
+                            previousScreen = currentScreen
                             currentScreen = Screen.AI_SETTINGS
                         },
                         onOpenAbout = {
+                            previousScreen = currentScreen
                             currentScreen = Screen.ABOUT
                         }
                     )
@@ -196,13 +199,13 @@ fun App() {
 
                 Screen.AI_SETTINGS -> {
                     AiSettingsScreen(
-                        onBack = { currentScreen = Screen.WELCOME }
+                        onBack = { currentScreen = previousScreen }
                     )
                 }
 
                 Screen.ABOUT -> {
                     AboutScreen(
-                        onBack = { currentScreen = Screen.WELCOME }
+                        onBack = { currentScreen = previousScreen }
                     )
                 }
             }
