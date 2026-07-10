@@ -1,5 +1,6 @@
 package com.example.cmp.domain
 
+import com.example.cmp.data.ActivityLevel
 import com.example.cmp.data.BodyCompositionResult
 import com.example.cmp.data.StorageManager
 import com.example.cmp.data.UserGoal
@@ -37,7 +38,6 @@ object AiRecommendationService {
 
     /**
      * Prueba la conexión con la API enviando un mensaje simple.
-     * Retorna un mensaje de éxito o el error ocurrido.
      */
     suspend fun testConnection(apiKey: String, baseUrl: String, model: String): String {
         if (apiKey.isBlank()) return "❌ Ingresa una API Key primero."
@@ -59,7 +59,15 @@ object AiRecommendationService {
         }
     }
 
-    suspend fun getRecommendations(result: BodyCompositionResult, goal: UserGoal): String? {
+    /**
+     * Obtiene recomendaciones personalizadas de IA según el perfil corporal,
+     * el objetivo y el nivel de actividad física.
+     */
+    suspend fun getRecommendations(
+        result: BodyCompositionResult,
+        goal: UserGoal,
+        activityLevel: ActivityLevel? = null
+    ): String? {
         val settings = StorageManager.loadAiSettings()
         if (settings.apiKey.isBlank()) {
             return null
@@ -67,7 +75,7 @@ object AiRecommendationService {
 
         val url = if (settings.baseUrl.endsWith("/")) "${settings.baseUrl}chat/completions" else "${settings.baseUrl}/chat/completions"
 
-        val prompt = buildPrompt(result, goal)
+        val prompt = buildPrompt(result, goal, activityLevel)
 
         val requestBody = ChatRequest(
             model = settings.model.ifBlank { "gpt-3.5-turbo" },
@@ -90,7 +98,17 @@ object AiRecommendationService {
         }
     }
 
-    private fun buildPrompt(result: BodyCompositionResult, goal: UserGoal): String {
+    private fun buildPrompt(
+        result: BodyCompositionResult,
+        goal: UserGoal,
+        activityLevel: ActivityLevel? = null
+    ): String {
+        val activitySection = if (activityLevel != null) {
+            """
+            - Nivel de actividad: ${activityLevel.emoji} ${activityLevel.displayName} — ${activityLevel.description}
+            """.trimIndent()
+        } else ""
+
         return """
             Tengo el siguiente perfil corporal:
             - Género: ${result.gender.displayName}
@@ -100,10 +118,11 @@ object AiRecommendationService {
             - Índice de masa libre de grasa (FFMI): ${result.ffmi}
             - Categoría de composición: ${result.category.displayName}
             - Riesgo cardiovascular (ICA): ${result.cardiovascularRisk.displayName}
+            $activitySection
             
             Mi objetivo actual es: ${goal.displayName} (${goal.description}).
             
-            Basado estrictamente en estos datos, dame recomendaciones personalizadas de nutrición y entrenamiento para lograr mi objetivo de forma saludable.
+            Interpreta estos datos según mi nivel de actividad y dame recomendaciones personalizadas de nutrición y entrenamiento para lograr mi objetivo de forma saludable.
         """.trimIndent()
     }
 }

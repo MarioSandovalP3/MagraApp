@@ -36,6 +36,7 @@ fun InputScreen(
 ) {
     var isAdvancedMode by remember { mutableStateOf(true) }
     var selectedGender by remember { mutableStateOf(Gender.MALE) }
+    var selectedActivity by remember { mutableStateOf(ActivityLevel.GENERAL_ACTIVE) }
 
     // Campos de texto
     var age by remember { mutableStateOf("") }
@@ -162,6 +163,14 @@ fun InputScreen(
                 )
             }
 
+            // Activity Level Selection
+            Spacer(modifier = Modifier.height(20.dp))
+            SectionHeader("NIVEL DE ACTIVIDAD")
+            ActivityLevelSelector(
+                selected = selectedActivity,
+                onSelected = { selectedActivity = it }
+            )
+
             Spacer(modifier = Modifier.height(20.dp))
 
             // Datos básicos
@@ -279,7 +288,8 @@ fun InputScreen(
                         neckCm = neck.toDoubleOrNull() ?: 0.0,
                         waistCm = waist.toDoubleOrNull() ?: 0.0,
                         hipCm = hip.toDoubleOrNull() ?: 0.0,
-                        mode = if (isAdvancedMode) CalculationMode.ADVANCED else CalculationMode.QUICK
+                        mode = if (isAdvancedMode) CalculationMode.ADVANCED else CalculationMode.QUICK,
+                        activityLevel = selectedActivity
                     )
                     onCalculate(measurements)
                 },

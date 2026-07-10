@@ -31,6 +31,21 @@ enum class CalculationMode(val displayName: String, val description: String) {
 }
 
 /**
+ * Nivel de actividad física del usuario.
+ */
+@Serializable
+enum class ActivityLevel(
+    val displayName: String,
+    val emoji: String,
+    val description: String
+) {
+    SEDENTARY("Sedentario", "🛋️", "Poca o ninguna actividad física"),
+    FITNESS_STRENGTH("Gimnasio / Fuerza", "🏋️", "Pesas, calistenia, hipertrofia, crossfit"),
+    ENDURANCE("Runner / Resistencia", "🏃", "Running, ciclismo, natación, triatlón"),
+    GENERAL_ACTIVE("Activo General", "🚴", "Deportes recreativos, fútbol, crossfit ligero")
+}
+
+/**
  * Mediciones ingresadas por el usuario.
  */
 @Serializable
@@ -42,7 +57,8 @@ data class UserMeasurements(
     val neckCm: Double = 0.0,     // Solo modo avanzado
     val waistCm: Double = 0.0,    // Solo modo avanzado
     val hipCm: Double = 0.0,      // Solo modo avanzado + mujeres
-    val mode: CalculationMode = CalculationMode.ADVANCED
+    val mode: CalculationMode = CalculationMode.ADVANCED,
+    val activityLevel: ActivityLevel = ActivityLevel.GENERAL_ACTIVE
 )
 
 /**

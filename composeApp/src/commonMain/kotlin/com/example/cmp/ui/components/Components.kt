@@ -27,6 +27,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.cmp.data.ActivityLevel
 import com.example.cmp.ui.theme.MagraColors
 import com.example.cmp.ui.theme.MagraGradients
 
@@ -528,6 +529,69 @@ fun MagraTextField(
         shape = RoundedCornerShape(14.dp),
         modifier = modifier.fillMaxWidth()
     )
+}
+
+// ═══════════════════════════════════════════════════════════════
+// ACTIVITY LEVEL SELECTOR - Selector de nivel de actividad física
+// ═══════════════════════════════════════════════════════════════
+
+@Composable
+fun ActivityLevelSelector(
+    selected: ActivityLevel,
+    onSelected: (ActivityLevel) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(modifier = modifier.fillMaxWidth()) {
+        ActivityLevel.entries.forEach { level ->
+            val isSelected = selected == level
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 4.dp)
+                    .clip(RoundedCornerShape(14.dp))
+                    .background(
+                        if (isSelected) MagraColors.Primary.copy(alpha = 0.15f)
+                        else MagraColors.Primary.copy(alpha = 0.06f)
+                    )
+                    .border(
+                        1.5.dp,
+                        if (isSelected) MagraColors.Primary else MagraColors.GlassBorder,
+                        RoundedCornerShape(14.dp)
+                    )
+                    .clickable { onSelected(level) }
+                    .padding(horizontal = 16.dp, vertical = 14.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(text = level.emoji, fontSize = 22.sp)
+                Spacer(modifier = Modifier.width(14.dp))
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = level.displayName,
+                        color = if (isSelected) Color.White else MagraColors.TextPrimary,
+                        fontSize = 15.sp,
+                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                    )
+                    Text(
+                        text = level.description,
+                        color = MagraColors.TextMuted,
+                        fontSize = 12.sp
+                    )
+                }
+                if (isSelected) {
+                    Box(
+                        modifier = Modifier
+                            .size(22.dp)
+                            .clip(CircleShape)
+                            .background(MagraColors.Primary),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text("✓", color = Color.White, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                    }
+                }
+            }
+        }
+    }
 }
 
 // ═══════════════════════════════════════════════════════════════

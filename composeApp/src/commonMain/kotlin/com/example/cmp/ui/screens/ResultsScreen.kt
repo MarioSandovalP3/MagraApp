@@ -62,7 +62,11 @@ fun ResultsScreen(
         val settings = StorageManager.loadAiSettings()
         if (settings.apiKey.isNotBlank()) {
             isAiLoading = true
-            aiRecommendation = AiRecommendationService.getRecommendations(result, goal)
+            aiRecommendation = AiRecommendationService.getRecommendations(
+                result = result,
+                goal = goal,
+                activityLevel = measurements.activityLevel
+            )
             isAiLoading = false
         }
     }
