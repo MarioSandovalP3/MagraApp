@@ -11,6 +11,9 @@ import com.example.cmp.data.PlatformStorage
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        // Restaurar el tema por defecto para la actividad después del Splash Screen
+        setTheme(android.R.style.Theme_Material_Light_NoActionBar)
+        
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
