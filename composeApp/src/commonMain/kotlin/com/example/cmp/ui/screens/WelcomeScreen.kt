@@ -68,7 +68,7 @@ fun WelcomeScreen(
                 .navigationBarsPadding()
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 28.dp)
-                .padding(top = 16.dp, bottom = 16.dp),
+                .padding(top = 40.dp, bottom = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // Header con botón de menú hamburguesa

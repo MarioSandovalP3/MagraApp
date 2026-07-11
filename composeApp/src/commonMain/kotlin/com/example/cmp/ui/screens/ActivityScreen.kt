@@ -47,7 +47,7 @@ fun ActivityScreen(
                 .navigationBarsPadding()
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 28.dp)
-                .padding(top = 48.dp, bottom = 32.dp),
+                .padding(top = 40.dp, bottom = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             AnimatedVisibility(
@@ -69,27 +69,27 @@ fun ActivityScreen(
                             Text("☰", fontSize = 20.sp, color = Color.White)
                         }
                     }
-                    Spacer(modifier = Modifier.height(24.dp))
+                    Spacer(modifier = Modifier.height(10.dp))
                     Box(
-                        modifier = Modifier.size(72.dp).clip(RoundedCornerShape(22.dp)).background(MagraColors.Primary.copy(alpha = 0.15f)),
+                        modifier = Modifier.size(44.dp).clip(RoundedCornerShape(12.dp)).background(MagraColors.Primary.copy(alpha = 0.15f)),
                         contentAlignment = Alignment.Center
-                    ) { Text("🏃", fontSize = 32.sp) }
-                    Spacer(modifier = Modifier.height(20.dp))
-                    Text("NIVEL DE ACTIVIDAD", color = MagraColors.Primary, fontSize = 26.sp, fontWeight = FontWeight.Black, letterSpacing = 3.sp)
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text("Selecciona tu nivel para\nrecomendaciones más precisas", color = MagraColors.TextSecondary, fontSize = 15.sp, textAlign = TextAlign.Center, lineHeight = 22.sp)
-                    Spacer(modifier = Modifier.height(6.dp))
-                    Text("Objetivo: ${goal.emoji} ${goal.displayName}", color = MagraColors.Primary.copy(alpha = 0.7f), fontSize = 13.sp, fontWeight = FontWeight.Medium)
+                    ) { Text("🏃", fontSize = 20.sp) }
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Text("NIVEL DE ACTIVIDAD", color = MagraColors.Primary, fontSize = 18.sp, fontWeight = FontWeight.Black, letterSpacing = 1.5.sp)
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text("Selecciona tu nivel para recomendaciones más precisas", color = MagraColors.TextSecondary, fontSize = 13.sp, textAlign = TextAlign.Center, lineHeight = 18.sp)
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text("Objetivo: ${goal.emoji} ${goal.displayName}", color = MagraColors.Primary.copy(alpha = 0.7f), fontSize = 12.sp, fontWeight = FontWeight.Medium)
                 }
             }
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(16.dp))
             AnimatedVisibility(
                 visible = visible,
                 enter = fadeIn(tween(800, delayMillis = 300)) + slideInVertically(tween(800, delayMillis = 300, easing = FastOutSlowInEasing)) { 60 }
             ) {
                 ActivityLevelSelector(selected = selectedActivity, onSelected = { selectedActivity = it })
             }
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.height(16.dp))
             AnimatedVisibility(
                 visible = visible,
                 enter = fadeIn(tween(800, delayMillis = 600)) + slideInVertically(tween(800, delayMillis = 600, easing = FastOutSlowInEasing)) { 40 }

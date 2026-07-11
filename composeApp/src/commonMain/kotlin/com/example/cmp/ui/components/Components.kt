@@ -585,7 +585,7 @@ fun ActivityLevelSelector(
                         RoundedCornerShape(14.dp)
                     )
                     .clickable { onSelected(level) }
-                    .padding(horizontal = 16.dp, vertical = 14.dp),
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(text = level.emoji, fontSize = 22.sp)
