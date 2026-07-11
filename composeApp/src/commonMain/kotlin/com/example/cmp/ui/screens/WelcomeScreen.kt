@@ -68,7 +68,7 @@ fun WelcomeScreen(
                 .navigationBarsPadding()
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 28.dp)
-                .padding(top = 48.dp, bottom = 32.dp),
+                .padding(top = 16.dp, bottom = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // Header con botón de menú hamburguesa
@@ -95,46 +95,46 @@ fun WelcomeScreen(
             ) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.padding(top = 24.dp)
+                    modifier = Modifier.padding(top = 8.dp)
                 ) {
                     // Logo / Ícono
                     Image(
                         painter = painterResource(Res.drawable.magra_app_icon),
                         contentDescription = "MagraApp Logo",
                         modifier = Modifier
-                            .size(80.dp)
-                            .clip(RoundedCornerShape(24.dp))
+                            .size(60.dp)
+                            .clip(RoundedCornerShape(18.dp))
                             .border(
                                 2.dp,
                                 MagraColors.Primary.copy(alpha = glowAlpha),
-                                RoundedCornerShape(24.dp)
+                                RoundedCornerShape(18.dp)
                             )
                     )
 
-                    Spacer(modifier = Modifier.height(24.dp))
+                    Spacer(modifier = Modifier.height(12.dp))
 
                     Text(
                         text = "MAGRA",
                         color = MagraColors.Primary,
-                        fontSize = 42.sp,
+                        fontSize = 32.sp,
                         fontWeight = FontWeight.Black,
-                        letterSpacing = 6.sp
+                        letterSpacing = 4.sp
                     )
 
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(6.dp))
 
                     Text(
                         text = "Tu composición corporal\nmás allá del IMC",
                         color = MagraColors.TextSecondary,
-                        fontSize = 16.sp,
+                        fontSize = 14.sp,
                         fontWeight = FontWeight.Normal,
                         textAlign = TextAlign.Center,
-                        lineHeight = 24.sp
+                        lineHeight = 20.sp
                     )
                 }
             }
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             // Goal Selection
             AnimatedVisibility(
@@ -149,12 +149,12 @@ fun WelcomeScreen(
                     Text(
                         text = "¿CUÁL ES TU OBJETIVO?",
                         color = MagraColors.TextMuted,
-                        fontSize = 12.sp,
+                        fontSize = 11.sp,
                         fontWeight = FontWeight.SemiBold,
-                        letterSpacing = 2.sp
+                        letterSpacing = 1.5.sp
                     )
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(10.dp))
 
                     UserGoal.entries.forEach { goal ->
                         GoalCard(
@@ -162,12 +162,12 @@ fun WelcomeScreen(
                             isSelected = selectedGoal == goal,
                             onClick = { selectedGoal = goal }
                         )
-                        Spacer(modifier = Modifier.height(12.dp))
+                        Spacer(modifier = Modifier.height(8.dp))
                     }
                 }
             }
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             // Continue Button
             AnimatedVisibility(
@@ -210,11 +210,11 @@ private fun GoalCard(
         modifier = Modifier
             .fillMaxWidth()
             .scale(scale)
-            .clip(RoundedCornerShape(18.dp))
+            .clip(RoundedCornerShape(14.dp))
             .background(MagraColors.Primary.copy(alpha = bgAlpha))
-            .border(1.5.dp, borderColor, RoundedCornerShape(18.dp))
+            .border(1.2.dp, borderColor, RoundedCornerShape(14.dp))
             .clickable(onClick = onClick)
-            .padding(horizontal = 20.dp, vertical = 18.dp),
+            .padding(horizontal = 16.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
