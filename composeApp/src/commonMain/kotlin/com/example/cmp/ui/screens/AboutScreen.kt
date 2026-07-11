@@ -22,6 +22,10 @@ import androidx.compose.ui.unit.sp
 import com.example.cmp.ui.theme.MagraColors
 import com.example.cmp.ui.theme.MagraGradients
 
+import androidx.compose.foundation.Image
+import org.jetbrains.compose.resources.painterResource
+import cmp.composeapp.generated.resources.Res
+import cmp.composeapp.generated.resources.magra_app_icon
 import com.example.cmp.ui.components.BackIcon
 
 @Composable
@@ -45,10 +49,13 @@ fun AboutScreen(onBack: () -> Unit) {
                 }
             }
             Spacer(modifier = Modifier.height(32.dp))
-            Box(
-                modifier = Modifier.size(96.dp).clip(RoundedCornerShape(28.dp)).background(MagraColors.Primary.copy(alpha = 0.15f)),
-                contentAlignment = Alignment.Center
-            ) { Text("💪", fontSize = 44.sp) }
+            Image(
+                painter = painterResource(Res.drawable.magra_app_icon),
+                contentDescription = "MagraApp Logo",
+                modifier = Modifier
+                    .size(96.dp)
+                    .clip(RoundedCornerShape(28.dp))
+            )
             Spacer(modifier = Modifier.height(24.dp))
             Text("MagraApp", color = MagraColors.Primary, fontSize = 32.sp, fontWeight = FontWeight.Black, letterSpacing = 4.sp)
             Spacer(modifier = Modifier.height(8.dp))

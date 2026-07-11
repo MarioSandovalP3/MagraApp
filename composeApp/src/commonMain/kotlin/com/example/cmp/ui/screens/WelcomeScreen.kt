@@ -20,6 +20,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.Image
+import org.jetbrains.compose.resources.painterResource
+import cmp.composeapp.generated.resources.Res
+import cmp.composeapp.generated.resources.magra_app_icon
 import com.example.cmp.data.UserGoal
 import com.example.cmp.ui.components.GlassCard
 import com.example.cmp.ui.components.GradientButton
@@ -91,23 +95,18 @@ fun WelcomeScreen(
                     modifier = Modifier.padding(top = 24.dp)
                 ) {
                     // Logo / Ícono
-                    Box(
+                    Image(
+                        painter = painterResource(Res.drawable.magra_app_icon),
+                        contentDescription = "MagraApp Logo",
                         modifier = Modifier
                             .size(80.dp)
                             .clip(RoundedCornerShape(24.dp))
-                            .background(MagraColors.Primary.copy(alpha = glowAlpha * 0.3f))
                             .border(
                                 2.dp,
                                 MagraColors.Primary.copy(alpha = glowAlpha),
                                 RoundedCornerShape(24.dp)
-                            ),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = "💪",
-                            fontSize = 36.sp
-                        )
-                    }
+                            )
+                    )
 
                     Spacer(modifier = Modifier.height(24.dp))
 
