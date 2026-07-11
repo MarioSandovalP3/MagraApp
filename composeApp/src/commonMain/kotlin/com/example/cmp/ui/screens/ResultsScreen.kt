@@ -366,29 +366,25 @@ fun ResultsScreen(
 
                     Spacer(modifier = Modifier.height(12.dp))
 
-                    Row(modifier = Modifier.fillMaxWidth()) {
-                        Box(modifier = Modifier.weight(1f)) {
-                            MetricCard(
-                                emoji = "🔥",
-                                title = "Metabolismo Basal (TMB)",
-                                value = "${result.bmr.toInt()} kcal",
-                                subtitle = "Energía vital en reposo",
-                                accentColor = MagraColors.TextSecondary,
-                                onInfoClick = { infoDialogType = "BMR" }
-                            )
-                        }
-                        Spacer(modifier = Modifier.width(12.dp))
-                        Box(modifier = Modifier.weight(1f)) {
-                            MetricCard(
-                                emoji = "⚡",
-                                title = "Gasto Diario (TDEE)",
-                                value = "${result.tdee.toInt()} kcal",
-                                subtitle = "Quemado estimado",
-                                accentColor = MagraColors.TextSecondary,
-                                onInfoClick = { infoDialogType = "TDEE" }
-                            )
-                        }
-                    }
+                    MetricCard(
+                        emoji = "🔥",
+                        title = "Metabolismo Basal (TMB)",
+                        value = "${result.bmr.toInt()} kcal",
+                        subtitle = "Energía vital en reposo absoluto",
+                        accentColor = MagraColors.TextSecondary,
+                        onInfoClick = { infoDialogType = "BMR" }
+                    )
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    MetricCard(
+                        emoji = "⚡",
+                        title = "Gasto Diario (TDEE)",
+                        value = "${result.tdee.toInt()} kcal",
+                        subtitle = "Gasto calórico estimado al día",
+                        accentColor = MagraColors.TextSecondary,
+                        onInfoClick = { infoDialogType = "TDEE" }
+                    )
                 }
             }
 
