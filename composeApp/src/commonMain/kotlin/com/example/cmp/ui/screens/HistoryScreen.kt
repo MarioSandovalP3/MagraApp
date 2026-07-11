@@ -45,7 +45,9 @@ fun HistoryScreen(
             .background(MagraGradients.Background)
     ) {
         Column(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
+                .navigationBarsPadding()
         ) {
             // Header fijo
             Row(

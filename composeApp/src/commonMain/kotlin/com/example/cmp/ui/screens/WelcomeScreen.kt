@@ -6,8 +6,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -63,10 +65,11 @@ fun WelcomeScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .navigationBarsPadding()
+                .verticalScroll(rememberScrollState())
                 .padding(horizontal = 28.dp)
                 .padding(top = 48.dp, bottom = 32.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // Header con botón de menú hamburguesa
             Row(
@@ -131,6 +134,8 @@ fun WelcomeScreen(
                 }
             }
 
+            Spacer(modifier = Modifier.height(32.dp))
+
             // Goal Selection
             AnimatedVisibility(
                 visible = visible,
@@ -161,6 +166,8 @@ fun WelcomeScreen(
                     }
                 }
             }
+
+            Spacer(modifier = Modifier.height(24.dp))
 
             // Continue Button
             AnimatedVisibility(

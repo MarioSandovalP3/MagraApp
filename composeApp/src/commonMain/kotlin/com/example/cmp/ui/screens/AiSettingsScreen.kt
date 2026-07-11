@@ -51,6 +51,7 @@ fun AiSettingsScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .navigationBarsPadding()
                 .verticalScroll(scrollState)
                 .padding(horizontal = 24.dp)
                 .padding(top = 48.dp, bottom = 24.dp)

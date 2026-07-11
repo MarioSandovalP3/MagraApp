@@ -42,7 +42,12 @@ fun ActivityScreen(
         modifier = Modifier.fillMaxSize().background(MagraGradients.Background)
     ) {
         Column(
-            modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 28.dp).padding(top = 48.dp, bottom = 32.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .navigationBarsPadding()
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 28.dp)
+                .padding(top = 48.dp, bottom = 32.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             AnimatedVisibility(

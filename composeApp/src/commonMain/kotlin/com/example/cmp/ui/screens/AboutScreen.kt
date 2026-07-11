@@ -37,7 +37,12 @@ fun AboutScreen(onBack: () -> Unit) {
         modifier = Modifier.fillMaxSize().background(MagraGradients.Background)
     ) {
         Column(
-            modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 28.dp).padding(top = 16.dp, bottom = 32.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .navigationBarsPadding()
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 28.dp)
+                .padding(top = 16.dp, bottom = 32.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start) {
