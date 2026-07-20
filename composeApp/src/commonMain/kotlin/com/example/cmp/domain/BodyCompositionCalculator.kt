@@ -117,6 +117,7 @@ object BodyCompositionCalculator {
 
         val category = BodyCategory.fromBodyFat(bodyFatPercentage, measurements.gender)
         val cardiovascularRisk = classifyCardiovascularRisk(waistToHeightRatio)
+        val bodyTypeCategory = classifyBodyType(bmi, bodyFatPercentage, measurements.gender)
 
         // BMR (Tasa Metabólica Basal)
         val bmr = if (measurements.mode == CalculationMode.ADVANCED && leanMassKg > 0.0) {
@@ -164,8 +165,34 @@ object BodyCompositionCalculator {
             gender = measurements.gender,
             bmr = bmr.roundTo(0),
             tdee = tdee.roundTo(0),
-            targetCalories = targetCalories.roundTo(0)
+            targetCalories = targetCalories.roundTo(0),
+            bodyTypeCategory = bodyTypeCategory
         )
+    }
+
+    /**
+     * Clasificación de tipo de cuerpo combinando IMC y Porcentaje de Grasa Corporal.
+     * Basado en la Matriz 2D Morfofuncional.
+     */
+    fun classifyBodyType(bmi: Double, bodyFatPercentage: Double, gender: Gender): BodyTypeCategory {
+        return when (gender) {
+            Gender.MALE -> when {
+                bmi >= 27.0 -> {
+                    if (bodyFatPercentage >= 30.0) BodyTypeCategory.HIGH_FAT
+                    else BodyTypeCategory.BULKY
+                }
+                bodyFatPercentage >= 18.0 -> BodyTypeCategory.SKINNY_FAT
+                else -> BodyTypeCategory.SLIM
+            }
+            Gender.FEMALE -> when {
+                bmi >= 27.0 -> {
+                    if (bodyFatPercentage >= 40.0) BodyTypeCategory.HIGH_FAT
+                    else BodyTypeCategory.BULKY
+                }
+                bodyFatPercentage >= 28.0 -> BodyTypeCategory.SKINNY_FAT
+                else -> BodyTypeCategory.SLIM
+            }
+        }
     }
 
     /**

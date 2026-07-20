@@ -254,6 +254,21 @@ fun ResultsScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
+            // Matriz de Composición 2D
+            AnimatedVisibility(
+                visible = visible,
+                enter = fadeIn(tween(600, delayMillis = 400)) + slideInVertically(
+                    tween(600, delayMillis = 400)
+                ) { 40 }
+            ) {
+                BodyTypeMatrixCard(
+                    result = result,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
             // Métricas detalladas
             AnimatedVisibility(
                 visible = visible,

@@ -28,6 +28,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.cmp.data.ActivityLevel
+import com.example.cmp.data.BodyCompositionResult
+import com.example.cmp.data.BodyTypeCategory
+import com.example.cmp.data.Gender
 import com.example.cmp.ui.theme.MagraColors
 import com.example.cmp.ui.theme.MagraGradients
 
@@ -694,6 +697,252 @@ fun BackIcon(
             strokeWidth = strokeWidthPx,
             cap = StrokeCap.Round
         )
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// BODY TYPE MATRIX CARD - Matriz 2D (IMC vs %GC)
+// ═══════════════════════════════════════════════════════════════
+
+@Composable
+fun BodyTypeMatrixCard(
+    result: BodyCompositionResult,
+    modifier: Modifier = Modifier
+) {
+    val gender = result.gender
+    val currentType = result.bodyTypeCategory
+    val isMale = gender == Gender.MALE
+
+    GlassCard(modifier = modifier) {
+        Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+            // Cabecera con título y badge de género
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column {
+                    Text(
+                        text = "MATRIZ DE COMPOSICIÓN 2D",
+                        color = MagraColors.Accent,
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold,
+                        letterSpacing = 1.5.sp
+                    )
+                    Text(
+                        text = "Clasificación Morfofuncional",
+                        color = Color.White,
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+
+                // Badge de género
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(20.dp))
+                        .background(
+                            if (isMale) Brush.linearGradient(listOf(Color(0xFF0088FF), Color(0xFF00C6FF)))
+                            else Brush.linearGradient(listOf(Color(0xFFFF007A), Color(0xFFFF6584)))
+                        )
+                        .padding(horizontal = 12.dp, vertical = 6.dp)
+                ) {
+                    Text(
+                        text = if (isMale) "MASCULINO" else "FEMENINO",
+                        color = Color.White,
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        letterSpacing = 1.sp
+                    )
+                }
+            }
+
+            // Resultado actual del usuario
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(14.dp))
+                    .background(MagraColors.GlassBackgroundElevated)
+                    .border(
+                        width = 1.dp,
+                        brush = Brush.horizontalGradient(
+                            listOf(MagraColors.Accent, MagraColors.SecondaryLight)
+                        ),
+                        shape = RoundedCornerShape(14.dp)
+                    )
+                    .padding(14.dp)
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Text(
+                        text = currentType.emoji,
+                        fontSize = 32.sp
+                    )
+                    Column {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(
+                                text = "TU BIOTIPO: ",
+                                color = MagraColors.TextSecondary,
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.Bold,
+                                letterSpacing = 1.sp
+                            )
+                            Text(
+                                text = currentType.getDisplayName(gender).uppercase(),
+                                color = Color.White,
+                                fontSize = 15.sp,
+                                fontWeight = FontWeight.ExtraBold
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(2.dp))
+                        Text(
+                            text = currentType.description,
+                            color = MagraColors.TextSecondary,
+                            fontSize = 12.sp,
+                            lineHeight = 16.sp
+                        )
+                    }
+                }
+            }
+
+            // Grilla 2x2 de la Matriz 2D
+            Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                // Fila 1: Delgado vs Voluminoso
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    MatrixItem(
+                        category = BodyTypeCategory.SLIM,
+                        gender = gender,
+                        isSelected = currentType == BodyTypeCategory.SLIM,
+                        modifier = Modifier.weight(1f)
+                    )
+                    MatrixItem(
+                        category = BodyTypeCategory.BULKY,
+                        gender = gender,
+                        isSelected = currentType == BodyTypeCategory.BULKY,
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+
+                // Fila 2: Delgado con Grasa vs Grasa Corporal Alta
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    MatrixItem(
+                        category = BodyTypeCategory.SKINNY_FAT,
+                        gender = gender,
+                        isSelected = currentType == BodyTypeCategory.SKINNY_FAT,
+                        modifier = Modifier.weight(1f)
+                    )
+                    MatrixItem(
+                        category = BodyTypeCategory.HIGH_FAT,
+                        gender = gender,
+                        isSelected = currentType == BodyTypeCategory.HIGH_FAT,
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun MatrixItem(
+    category: BodyTypeCategory,
+    gender: Gender,
+    isSelected: Boolean,
+    modifier: Modifier = Modifier
+) {
+    val shape = RoundedCornerShape(12.dp)
+
+    val bgColor = if (isSelected) {
+        when (category) {
+            BodyTypeCategory.SLIM -> Color(0xFF00E5FF).copy(alpha = 0.2f)
+            BodyTypeCategory.SKINNY_FAT -> Color(0xFFFF9100).copy(alpha = 0.25f)
+            BodyTypeCategory.BULKY -> Color(0xFF7C4DFF).copy(alpha = 0.25f)
+            BodyTypeCategory.HIGH_FAT -> Color(0xFFFF5252).copy(alpha = 0.25f)
+        }
+    } else {
+        Color.White.copy(alpha = 0.03f)
+    }
+
+    val borderColor = if (isSelected) {
+        when (category) {
+            BodyTypeCategory.SLIM -> Color(0xFF00E5FF)
+            BodyTypeCategory.SKINNY_FAT -> Color(0xFFFF9100)
+            BodyTypeCategory.BULKY -> Color(0xFFB388FF)
+            BodyTypeCategory.HIGH_FAT -> Color(0xFFFF5252)
+        }
+    } else {
+        Color.White.copy(alpha = 0.08f)
+    }
+
+    Box(
+        modifier = modifier
+            .clip(shape)
+            .background(bgColor)
+            .border(
+                width = if (isSelected) 2.dp else 1.dp,
+                color = borderColor,
+                shape = shape
+            )
+            .padding(10.dp)
+    ) {
+        Column {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = category.emoji,
+                    fontSize = 16.sp
+                )
+                if (isSelected) {
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(borderColor)
+                            .padding(horizontal = 6.dp, vertical = 2.dp)
+                    ) {
+                        Text(
+                            text = "AQUÍ",
+                            color = Color.Black,
+                            fontSize = 9.sp,
+                            fontWeight = FontWeight.ExtraBold
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(4.dp))
+
+            Text(
+                text = category.getDisplayName(gender),
+                color = if (isSelected) Color.White else MagraColors.TextSecondary,
+                fontSize = 13.sp,
+                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
+            )
+
+            Spacer(modifier = Modifier.height(4.dp))
+
+            Text(
+                text = "%GC: ${category.getFatRange(gender)}",
+                color = if (isSelected) Color.White.copy(alpha = 0.9f) else MagraColors.TextSecondary.copy(alpha = 0.7f),
+                fontSize = 10.sp
+            )
+
+            Text(
+                text = "IMC: ${category.bmiRange}",
+                color = if (isSelected) Color.White.copy(alpha = 0.9f) else MagraColors.TextSecondary.copy(alpha = 0.7f),
+                fontSize = 10.sp
+            )
+        }
     }
 }
 

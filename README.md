@@ -11,13 +11,14 @@ App multiplataforma que va **más allá del IMC**. Utiliza el **Método de la Ma
 
 | Función | Descripción |
 |---|---|
+| **Matriz 2D (IMC vs %GC)** | Clasificación morfofuncional (Delgado, Delgado con Grasa, Voluminoso, Grasa Alta) |
 | **Método de la Marina** | Calcula % de grasa corporal con medidas de cuello, cintura y cadera |
 | **Modo Rápido (IMC)** | Cálculo básico con peso y estatura (con aviso de limitaciones) |
 | **Masa Grasa vs Magra** | Separa tu peso en grasa y músculo con barra visual |
 | **FFMI** | Índice de Masa Libre de Grasa — el verdadero sustituto del IMC para atletas |
 | **ICA** | Relación Cintura-Altura — indicador de riesgo cardiovascular |
 | **Clasificación ACSM** | Te clasifica como Atleta, Fitness, Aceptable o Sobrepeso |
-| **Recomendaciones** | Consejos personalizados según tu objetivo |
+| **Recomendaciones** | Consejos personalizados según tu objetivo y biotipo |
 | **Historial** | Gráficos de tendencia para rastrear tu progreso |
 
 ---

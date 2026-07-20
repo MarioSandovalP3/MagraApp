@@ -108,6 +108,60 @@ enum class CardiovascularRisk(val displayName: String, val emoji: String) {
 }
 
 /**
+ * Clasificación de tipo de cuerpo combinando IMC y Porcentaje de Grasa Corporal (%GC).
+ */
+@Serializable
+enum class BodyTypeCategory(
+    val maleName: String,
+    val femaleName: String,
+    val emoji: String,
+    val maleFatRange: String,
+    val femaleFatRange: String,
+    val bmiRange: String,
+    val description: String
+) {
+    SLIM(
+        maleName = "Delgado",
+        femaleName = "Delgada",
+        emoji = "🏃",
+        maleFatRange = "< 18%",
+        femaleFatRange = "< 28%",
+        bmiRange = "< 21",
+        description = "Bajo porcentaje de grasa corporal e IMC delgado."
+    ),
+    SKINNY_FAT(
+        maleName = "Delgado con Grasa",
+        femaleName = "Delgada con Grasa",
+        emoji = "⚖️",
+        maleFatRange = "≥ 18%",
+        femaleFatRange = "≥ 28%",
+        bmiRange = "< 27",
+        description = "IMC moderado/bajo con porcentaje de grasa elevado (Falso Delgado). Requiere recomposición corporal."
+    ),
+    BULKY(
+        maleName = "Voluminoso",
+        femaleName = "Voluminosa",
+        emoji = "🏋️",
+        maleFatRange = "18% - 29%",
+        femaleFatRange = "28% - 39%",
+        bmiRange = "≥ 27",
+        description = "IMC elevado con masa magra desarrollada o estructura corporal densa y grasa moderada."
+    ),
+    HIGH_FAT(
+        maleName = "Grasa Corporal Alta",
+        femaleName = "Grasa Corporal Alta",
+        emoji = "⚠️",
+        maleFatRange = "≥ 30%",
+        femaleFatRange = "≥ 40%",
+        bmiRange = "≥ 27",
+        description = "Porcentaje de grasa corporal e IMC elevados. Se recomienda plan enfocado en reducción de grasa."
+    );
+
+    fun getDisplayName(gender: Gender): String = if (gender == Gender.MALE) maleName else femaleName
+    fun getFatRange(gender: Gender): String = if (gender == Gender.MALE) maleFatRange else femaleFatRange
+}
+
+/**
  * Resultado completo de la evaluación de composición corporal.
  */
 @Serializable
@@ -124,7 +178,8 @@ data class BodyCompositionResult(
     val gender: Gender,
     val bmr: Double = 0.0,
     val tdee: Double = 0.0,
-    val targetCalories: Double = 0.0
+    val targetCalories: Double = 0.0,
+    val bodyTypeCategory: BodyTypeCategory = BodyTypeCategory.SLIM
 )
 
 /**

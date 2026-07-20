@@ -38,6 +38,9 @@ object GoalRecommendations {
         // Recomendaciones por categoría actual (aplica a todos)
         recommendations.add(getCategoryFeedback(result))
 
+        // Recomendación por Biotipo (IMC vs %GC)
+        recommendations.add(getBodyTypeFeedback(result))
+
         // Recomendaciones específicas por objetivo
         when (goal) {
             UserGoal.LOSE_FAT -> recommendations.addAll(loseFatRecommendations(result, previousEntry))
@@ -366,6 +369,36 @@ object GoalRecommendations {
                 title = "Riesgo cardiovascular alto",
                 message = "Tu ICA (${result.waistToHeightRatio}) indica riesgo alto. Se recomienda consultar con un profesional de salud.",
                 type = RecommendationType.WARNING
+            )
+        }
+    }
+
+    private fun getBodyTypeFeedback(result: BodyCompositionResult): Recommendation {
+        val name = result.bodyTypeCategory.getDisplayName(result.gender)
+        return when (result.bodyTypeCategory) {
+            BodyTypeCategory.SLIM -> Recommendation(
+                emoji = "🏃",
+                title = "Biotipo: $name",
+                message = "Tu porcentaje de grasa (${result.bodyFatPercentage}%) e IMC (${result.bmi}) corresponden a una contextura delgada.",
+                type = RecommendationType.INFO
+            )
+            BodyTypeCategory.SKINNY_FAT -> Recommendation(
+                emoji = "⚖️",
+                title = "Biotipo: $name",
+                message = "Tu IMC (${result.bmi}) es moderado/bajo pero tu grasa corporal (${result.bodyFatPercentage}%) es elevada. Se sugiere enfocar en recomposición corporal con pesas y alta proteína.",
+                type = RecommendationType.WARNING
+            )
+            BodyTypeCategory.BULKY -> Recommendation(
+                emoji = "🏋️",
+                title = "Biotipo: $name",
+                message = "Tu IMC es elevado (${result.bmi}) pero tu grasa corporal (${result.bodyFatPercentage}%) está en rango controlado. Indica buena densidad muscular.",
+                type = RecommendationType.SUCCESS
+            )
+            BodyTypeCategory.HIGH_FAT -> Recommendation(
+                emoji = "⚠️",
+                title = "Biotipo: $name",
+                message = "Tanto tu IMC (${result.bmi}) como tu grasa corporal (${result.bodyFatPercentage}%) se encuentran en niveles elevados. Prioriza un déficit calórico constante.",
+                type = RecommendationType.ACTION
             )
         }
     }
