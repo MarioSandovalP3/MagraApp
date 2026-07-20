@@ -721,19 +721,20 @@ fun BodyTypeMatrixCard(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Column {
+                Column(modifier = Modifier.weight(1f).padding(end = 8.dp)) {
                     Text(
                         text = "MATRIZ DE COMPOSICIÓN 2D",
                         color = MagraColors.Accent,
-                        fontSize = 12.sp,
+                        fontSize = 11.sp,
                         fontWeight = FontWeight.Bold,
-                        letterSpacing = 1.5.sp
+                        letterSpacing = 1.2.sp
                     )
                     Text(
                         text = "Clasificación Morfofuncional",
                         color = Color.White,
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        maxLines = 1
                     )
                 }
 
@@ -745,14 +746,16 @@ fun BodyTypeMatrixCard(
                             if (isMale) Brush.linearGradient(listOf(Color(0xFF0088FF), Color(0xFF00C6FF)))
                             else Brush.linearGradient(listOf(Color(0xFFFF007A), Color(0xFFFF6584)))
                         )
-                        .padding(horizontal = 12.dp, vertical = 6.dp)
+                        .padding(horizontal = 10.dp, vertical = 5.dp)
                 ) {
                     Text(
                         text = if (isMale) "MASCULINO" else "FEMENINO",
                         color = Color.White,
-                        fontSize = 11.sp,
+                        fontSize = 10.sp,
                         fontWeight = FontWeight.ExtraBold,
-                        letterSpacing = 1.sp
+                        letterSpacing = 0.5.sp,
+                        softWrap = false,
+                        maxLines = 1
                     )
                 }
             }
